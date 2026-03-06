@@ -634,9 +634,6 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
         })}
       </div>
 
-      {tab==="generador"&&(
-        <GeneradorContrato addToast={addToast}/>
-      )}
 
       {sel&&(
         <div className="modal-ov" onClick={()=>setSel(null)}>
