@@ -459,7 +459,7 @@ const DocItem = ({d, def, per, uploading, sel, setSel, fileRef, aprobar, rechaza
           {sBadge(status)}
           {isXml&&<span style={{fontSize:10,fontWeight:600,color:"#B45309",background:"#FEF3C7",padding:"2px 7px",borderRadius:4}}>XML</span>}
           {doc?.url&&<button className="btn btn-o btn-xs"><Ic d={I.link} s={11}/>Ver</button>}
-          <button className="btn btn-p btn-xs" onClick={()=>{activeDocId.current=d.id;fileRef.current.click();}}><Ic d={I.upload} s={11}/>Subir</button>
+          <button className="btn btn-p btn-xs" onClick={()=>{fileRef.current._did=d.id;fileRef.current.click();}}><Ic d={I.upload} s={11}/>Subir</button>
         </div>
       </div>
     </div>
@@ -474,7 +474,6 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
   const [sel,setSel]=useState(null);
   const [uploading,setUploading]=useState({});
   const fileRef=useRef();
-  const activeDocId=useRef(null);
 
   const mk=`${yr}-${String(mes+1).padStart(2,"0")}`;
   const per=periodos[mk];
@@ -533,7 +532,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
 
   return (
     <div>
-      <input ref={fileRef} type="file" accept=".pdf,.xml" style={{display:"none"}} onChange={e=>onFile(e,activeDocId.current)}/>
+      <input ref={fileRef} type="file" accept=".pdf,.xml" style={{display:"none"}} onChange={e=>onFile(e,fileRef.current._did)}/>
 
       {/* PERÍODO */}
       <div className="card mb16">
