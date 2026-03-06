@@ -7,7 +7,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabaseUpload = async (bucket, path, file) => {
   const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
     method: "POST",
-    headers: {
+    headers: 
       "Authorization": `Bearer ${SUPABASE_KEY}`,
       "x-upsert": "true",
       "Content-Type": file.type || "application/octet-stream",
@@ -40,17 +40,17 @@ const GLOBAL_CSS = `
 body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .app{display:flex;min-height:100vh}
-.sidebar{width:252px;min-height:100vh;background:var(--txt);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow:hidden}
-.sidebar::before{content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;border-radius:50%;background:rgba(9,103,210,.15);pointer-events:none}
+.sidebar{width:252px;min-height:100vh;background:#1C2E4A;display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;overflow:hidden}
+.sidebar::before{display:none}
 .sb-brand{padding:26px 22px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sb-logo{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px}.sb-logo span{color:#4DB8FF}
+.sb-logo{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px}.sb-logo span{color:#7DB4D8}
 .sb-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-top:3px;font-family:var(--mono)}
-.sb-pill{display:inline-block;margin-top:10px;padding:3px 10px;background:rgba(9,103,210,.3);border:1px solid rgba(77,184,255,.3);border-radius:20px;font-size:9px;color:#4DB8FF;font-family:var(--mono);letter-spacing:1.5px}
+.sb-pill{display:inline-block;margin-top:10px;padding:3px 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;font-size:9px;color:rgba(255,255,255,.5);font-family:var(--mono);letter-spacing:1.5px}
 .nav{padding:14px 0;flex:1}
 .nav-lbl{padding:10px 22px 5px;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase;font-family:var(--mono)}
 .nav-item{display:flex;align-items:center;gap:11px;padding:11px 22px;cursor:pointer;transition:all .15s;border-left:3px solid transparent;color:rgba(255,255,255,.5);font-size:13.5px;font-weight:500;user-select:none}
 .nav-item:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.05)}
-.nav-item.on{color:#fff;border-left-color:#4DB8FF;background:rgba(77,184,255,.12)}
+.nav-item.on{color:#fff;border-left-color:#5B8DB8;background:rgba(91,141,184,.1)}
 .nav-ic{width:18px;text-align:center;flex-shrink:0}
 .nav-badge{margin-left:auto;background:var(--red);color:#fff;border-radius:10px;font-size:10px;padding:1px 7px;font-weight:700;font-family:var(--mono)}
 .sb-foot{padding:14px 22px;border-top:1px solid rgba(255,255,255,.08)}
@@ -82,7 +82,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:10
 .card-body{padding:20px}
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:18px 20px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
-.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-card::after{content:'';position:absolute;top:0;left:0;width:4px;bottom:0;height:auto}
 .stat-card.blue::after{background:var(--blue)}.stat-card.green::after{background:var(--green)}
 .stat-card.amber::after{background:var(--amber)}.stat-card.red::after{background:var(--red)}
 .stat-card.purple::after{background:var(--purple)}
