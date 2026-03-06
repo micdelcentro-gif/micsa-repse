@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react";
+ï»¿import { useState, useRef, useEffect } from "react";
 import { jsPDF } from "jspdf";
 
 const SUPABASE_URL = "https://gdauwwjuvzuopzqkxnpw.supabase.co";
@@ -7,7 +7,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabaseUpload = async (bucket, path, file) => {
   const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
     method: "POST",
-    headers: 
+    headers: {
       "Authorization": `Bearer ${SUPABASE_KEY}`,
       "x-upsert": "true",
       "Content-Type": file.type || "application/octet-stream",
@@ -82,7 +82,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:10
 .card-body{padding:20px}
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:18px 20px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
-.stat-card::after{content:'';position:absolute;top:0;left:0;width:4px;bottom:0;height:auto}
+.stat-card::after{display:none}
 .stat-card.blue::after{background:var(--blue)}.stat-card.green::after{background:var(--green)}
 .stat-card.amber::after{background:var(--amber)}.stat-card.red::after{background:var(--red)}
 .stat-card.purple::after{background:var(--purple)}
@@ -218,45 +218,45 @@ const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto"
 
 const CAT = {
   fiscal:  { label: "Cumplimiento Fiscal Federal",          color: "#0967D2", bg: "#E8F1FD" },
-  imss:    { label: "Seguridad Social — IMSS",              color: "#5521B5", bg: "#EDE9FE" },
-  laboral: { label: "Nómina CFDI — 6 Trabajadores (Zentric)", color: "#0E7490", bg: "#E0F2FE" },
-  estatal: { label: "Impuesto Estatal — ISN",               color: "#0E8A5C", bg: "#E3F5EE" },
+  imss:    { label: "Seguridad Social â IMSS",              color: "#5521B5", bg: "#EDE9FE" },
+  laboral: { label: "NÃ³mina CFDI â 6 Trabajadores (Zentric)", color: "#0E7490", bg: "#E0F2FE" },
+  estatal: { label: "Impuesto Estatal â ISN",               color: "#0E8A5C", bg: "#E3F5EE" },
   corp:    { label: "Corporativo & Legal",                  color: "#B45309", bg: "#FEF3C7" },
 };
 
 // Trabajadores registrados en Zentric
 const TRABAJADORES = [
-  { id:"w1", nombre:"Sergio Santibáñez",  puesto:"Operador",          salario:3500 },
-  { id:"w2", nombre:"Ángel Rodríguez",    puesto:"Operador",          salario:2950 },
-  { id:"w3", nombre:"Juan Sariñana",      puesto:"Técnico",           salario:4500 },
-  { id:"w4", nombre:"Rolando Rodríguez",  puesto:"Supervisor",        salario:3000 },
-  { id:"w5", nombre:"Hugo de Alba",       puesto:"Técnico Especialista", salario:3600 },
+  { id:"w1", nombre:"Sergio SantibÃ¡Ã±ez",  puesto:"Operador",          salario:3500 },
+  { id:"w2", nombre:"Ãngel RodrÃ­guez",    puesto:"Operador",          salario:2950 },
+  { id:"w3", nombre:"Juan SariÃ±ana",      puesto:"TÃ©cnico",           salario:4500 },
+  { id:"w4", nombre:"Rolando RodrÃ­guez",  puesto:"Supervisor",        salario:3000 },
+  { id:"w5", nombre:"Hugo de Alba",       puesto:"TÃ©cnico Especialista", salario:3600 },
   { id:"w6", nombre:"Trabajador 6",       puesto:"Operador",          salario:3200 },
 ];
 
-// Docs estáticos (no-nómina)
+// Docs estÃ¡ticos (no-nÃ³mina)
 const DOCS_BASE = [
-  { id: "sat_op",    cat: "fiscal",  label: "Opinión de Cumplimiento SAT",       req: true  },
-  { id: "sat_decl",  cat: "fiscal",  label: "Declaración Mensual ISR / IVA",     req: true  },
+  { id: "sat_op",    cat: "fiscal",  label: "OpiniÃ³n de Cumplimiento SAT",       req: true  },
+  { id: "sat_decl",  cat: "fiscal",  label: "DeclaraciÃ³n Mensual ISR / IVA",     req: true  },
   { id: "sat_pago",  cat: "fiscal",  label: "Comprobante de Pago SAT",           req: true  },
-  { id: "sat_acuse", cat: "fiscal",  label: "Acuse de Declaración SAT",          req: true  },
-  { id: "imss_op",   cat: "imss",    label: "Opinión de Cumplimiento IMSS",      req: true  },
-  { id: "imss_det",  cat: "imss",    label: "SUA — Cédula de Determinación",     req: true  },
-  { id: "imss_liq",  cat: "imss",    label: "SUA — Cédula de Liquidación",       req: true  },
-  { id: "sipare",    cat: "imss",    label: "SIPARE — Comprobante de Pago",      req: true  },
-  { id: "isn_pago",  cat: "estatal", label: "ISN — Comprobante de Pago",         req: true  },
-  { id: "isn_decl",  cat: "estatal", label: "ISN — Declaración Mensual",         req: true  },
+  { id: "sat_acuse", cat: "fiscal",  label: "Acuse de DeclaraciÃ³n SAT",          req: true  },
+  { id: "imss_op",   cat: "imss",    label: "OpiniÃ³n de Cumplimiento IMSS",      req: true  },
+  { id: "imss_det",  cat: "imss",    label: "SUA â CÃ©dula de DeterminaciÃ³n",     req: true  },
+  { id: "imss_liq",  cat: "imss",    label: "SUA â CÃ©dula de LiquidaciÃ³n",       req: true  },
+  { id: "sipare",    cat: "imss",    label: "SIPARE â Comprobante de Pago",      req: true  },
+  { id: "isn_pago",  cat: "estatal", label: "ISN â Comprobante de Pago",         req: true  },
+  { id: "isn_decl",  cat: "estatal", label: "ISN â DeclaraciÃ³n Mensual",         req: true  },
   { id: "repse",     cat: "corp",    label: "Constancia REPSE Vigente",          req: true  },
-  { id: "csf",       cat: "corp",    label: "Constancia de Situación Fiscal",    req: true  },
+  { id: "csf",       cat: "corp",    label: "Constancia de SituaciÃ³n Fiscal",    req: true  },
   { id: "acta",      cat: "corp",    label: "Acta Constitutiva",                 req: false },
   { id: "poder",     cat: "corp",    label: "Poder Notarial del Representante",  req: false },
-  { id: "rc",        cat: "corp",    label: "Póliza de Responsabilidad Civil",   req: true  },
+  { id: "rc",        cat: "corp",    label: "PÃ³liza de Responsabilidad Civil",   req: true  },
 ];
 
-// Generar docs de nómina por cada trabajador (PDF + XML)
+// Generar docs de nÃ³mina por cada trabajador (PDF + XML)
 const DOCS_NOMINA = TRABAJADORES.flatMap(t => [
-  { id:`nom_pdf_${t.id}`, cat:"laboral", label:`CFDI PDF — ${t.nombre}`, req:true,  tipo:"pdf", wid:t.id },
-  { id:`nom_xml_${t.id}`, cat:"laboral", label:`CFDI XML — ${t.nombre}`, req:true,  tipo:"xml", wid:t.id },
+  { id:`nom_pdf_${t.id}`, cat:"laboral", label:`CFDI PDF â ${t.nombre}`, req:true,  tipo:"pdf", wid:t.id },
+  { id:`nom_xml_${t.id}`, cat:"laboral", label:`CFDI XML â ${t.nombre}`, req:true,  tipo:"xml", wid:t.id },
 ]);
 
 const DOCS = [...DOCS_BASE, ...DOCS_NOMINA];
@@ -312,7 +312,7 @@ const Semaforo = ({v}) => {
   return <div className="sem"><div className={`sl sr ${s==="r"?"on":""}`}/><div className={`sl sy ${s==="y"?"on":""}`}/><div className={`sl sg ${s==="g"?"on":""}`}/></div>;
 };
 
-// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+// ââ DASHBOARD âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const Dashboard = ({periodos, clientes}) => {
   const now = new Date();
   const mk = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
@@ -340,7 +340,7 @@ const Dashboard = ({periodos, clientes}) => {
         {[
           {lbl:"Cumplimiento del Mes", val:`${v}%`,  sub:MESES[now.getMonth()]+" "+now.getFullYear(), col:"blue",  ic:I.chart,   vc:pColor(v)},
           {lbl:"Archivos en la Nube",  val:totalNube, sub:"documentos almacenados",                   col:"purple",ic:I.cloud,   vc:"var(--txt)"},
-          {lbl:"Documentos Aprobados", val:totalOk,   sub:"total histórico",                          col:"green", ic:I.check,   vc:"var(--txt)"},
+          {lbl:"Documentos Aprobados", val:totalOk,   sub:"total histÃ³rico",                          col:"green", ic:I.check,   vc:"var(--txt)"},
           {lbl:"Pendientes Requeridos",val:totalPend, sub:"requieren carga",                          col:totalPend>0?"red":"green",ic:I.alert,vc:totalPend>0?"var(--red)":"var(--green)"},
         ].map((s,i)=>(
           <div key={i} className={`stat-card ${s.col}`}>
@@ -355,7 +355,7 @@ const Dashboard = ({periodos, clientes}) => {
       <div className="g2 mb22">
         <div className="card">
           <div className="card-hdr">
-            <div><div className="card-title">Cumplimiento — {MESES[now.getMonth()]} {now.getFullYear()}</div><div className="card-sub">Documentos requeridos aprobados</div></div>
+            <div><div className="card-title">Cumplimiento â {MESES[now.getMonth()]} {now.getFullYear()}</div><div className="card-sub">Documentos requeridos aprobados</div></div>
             <Semaforo v={v}/>
           </div>
           <div className="card-body">
@@ -375,14 +375,14 @@ const Dashboard = ({periodos, clientes}) => {
             <div className="mt16">
               {v>=100
                 ?<div className="alert alert-green" style={{margin:0}}><Ic d={I.check} s={16}/><div><div className="alert-title">Expediente Completo</div><div className="alert-desc">Listo para enviar a clientes</div></div></div>
-                :<div className="alert alert-amber" style={{margin:0}}><Ic d={I.alert} s={16}/><div><div className="alert-title">{DOCS.filter(d=>d.req&&per?.docs[d.id]?.status!=="aprobado").length} documentos pendientes</div><div className="alert-desc">Completa los documentos para habilitar envío a clientes</div></div></div>
+                :<div className="alert alert-amber" style={{margin:0}}><Ic d={I.alert} s={16}/><div><div className="alert-title">{DOCS.filter(d=>d.req&&per?.docs[d.id]?.status!=="aprobado").length} documentos pendientes</div><div className="alert-desc">Completa los documentos para habilitar envÃ­o a clientes</div></div></div>
               }
             </div>
           </div>
         </div>
 
         <div className="card">
-          <div className="card-hdr"><div><div className="card-title">Historial — Últimos 6 Meses</div><div className="card-sub">% cumplimiento mensual</div></div></div>
+          <div className="card-hdr"><div><div className="card-title">Historial â Ãltimos 6 Meses</div><div className="card-sub">% cumplimiento mensual</div></div></div>
           <div className="card-body">
             <div style={{display:"flex",alignItems:"flex-end",gap:10,height:130,marginBottom:8}}>
               {hist.map((m,i)=>(
@@ -398,10 +398,10 @@ const Dashboard = ({periodos, clientes}) => {
             <div className="divider"/>
             <div className="cloud-info" style={{marginBottom:10}}>
               <Ic d={I.cloud} s={14}/>
-              <span>Cloud activo — {totalNube} archivos sincronizados en storage.micsa.com</span>
+              <span>Cloud activo â {totalNube} archivos sincronizados en storage.micsa.com</span>
             </div>
             <div style={{display:"flex",gap:8}}>
-              {[["Almacenamiento",`${(totalNube*1.4).toFixed(1)} MB`,"usado de 50 GB"],["Períodos Activos","24","meses con documentos"]].map(([l,v,s])=>(
+              {[["Almacenamiento",`${(totalNube*1.4).toFixed(1)} MB`,"usado de 50 GB"],["PerÃ­odos Activos","24","meses con documentos"]].map(([l,v,s])=>(
                 <div key={l} style={{flex:1,background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:8,padding:"10px 14px"}}>
                   <div className="t11 muted mono" style={{marginBottom:3}}>{l.toUpperCase()}</div>
                   <div style={{fontWeight:700,fontSize:16}}>{v}</div>
@@ -416,15 +416,15 @@ const Dashboard = ({periodos, clientes}) => {
       <div className="card">
         <div className="card-hdr"><div><div className="card-title">Estado por Cliente</div><div className="card-sub">Cumplimiento del mes actual</div></div></div>
         <table className="table">
-          <thead><tr><th>CLIENTE</th><th>CORREO</th><th>DÍA LÍMITE</th><th>CUMPLIMIENTO</th><th>ESTADO</th><th>SEMÁFORO</th></tr></thead>
+          <thead><tr><th>CLIENTE</th><th>CORREO</th><th>DÃA LÃMITE</th><th>CUMPLIMIENTO</th><th>ESTADO</th><th>SEMÃFORO</th></tr></thead>
           <tbody>
             {clientes.filter(c=>c.activo).map(c=>(
               <tr key={c.id}>
                 <td><div className="flex aic g8"><div style={{width:10,height:10,borderRadius:"50%",background:c.color,flexShrink:0}}/><span className="fw7">{c.nombre}</span></div></td>
                 <td className="mono t11 muted">{c.email}</td>
-                <td><span className="badge bgr">Día {c.dia}</span></td>
+                <td><span className="badge bgr">DÃ­a {c.dia}</span></td>
                 <td><div className="flex aic g8" style={{minWidth:110}}><div className="progress f1"><div className="pf" style={{width:`${v}%`,background:pColor(v)}}/></div><span className="mono t11" style={{color:pColor(v),fontWeight:700}}>{v}%</span></div></td>
-                <td><span className={`badge ${pBadge(v)}`}>{v>=100?"✓ Listo":v>=60?"En proceso":"Incompleto"}</span></td>
+                <td><span className={`badge ${pBadge(v)}`}>{v>=100?"â Listo":v>=60?"En proceso":"Incompleto"}</span></td>
                 <td><Semaforo v={v}/></td>
               </tr>
             ))}
@@ -435,13 +435,13 @@ const Dashboard = ({periodos, clientes}) => {
   );
 };
 
-// ── DOCUMENTOS ────────────────────────────────────────────────────────────────
+// ââ DOCUMENTOS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const DocItem = ({d, def, per, uploading, sel, setSel, fileRef, aprobar, rechazar, addToast}) => {
   const doc = per?.docs[d.id];
   const status = doc?.status || "pendiente";
   const sBadge=(s)=>{
     if(s==="aprobado")return <span className="badge bg"><Ic d={I.check} s={10}/>Aprobado</span>;
-    if(s==="revision")return <span className="badge ba"><Ic d={I.eye} s={10}/>En Revisión</span>;
+    if(s==="revision")return <span className="badge ba"><Ic d={I.eye} s={10}/>En RevisiÃ³n</span>;
     return <span className="badge bgr"><Ic d={I.clock} s={10}/>Sin cargar</span>;
   };
   const isXml = d.tipo==="xml";
@@ -457,7 +457,7 @@ const DocItem = ({d, def, per, uploading, sel, setSel, fileRef, aprobar, rechaza
         <div className="doc-info" onClick={()=>doc?.nombre&&setSel({...d,doc})} style={{cursor:doc?.nombre?"pointer":"default"}}>
           <div className="doc-name">{d.label}</div>
           <div className="doc-meta">
-            {doc?.url?<><span style={{color:"var(--blue)"}}>☁ En nube</span> · {doc.fecha} · {doc.size}</>:d.req?"Requerido — sin cargar":"Opcional"}
+            {doc?.url?<><span style={{color:"var(--blue)"}}>â En nube</span> Â· {doc.fecha} Â· {doc.size}</>:d.req?"Requerido â sin cargar":"Opcional"}
           </div>
         </div>
         <div className="doc-acts">
@@ -495,7 +495,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
       setTimeout(()=>{
         setPeriodos(p=>({...p,[mk]:{...p[mk],docs:{...p[mk].docs,[docId]:{status:"revision",nombre:file.name,fecha:new Date().toISOString(),size:file.size,url,by:"Usuario"}}}}));
         setUploading(p=>{const n={...p};delete n[docId];return n;});
-        addToast("success",`${DOCS.find(d=>d.id===docId)?.label||docId} subido a Supabase ✓`);
+        addToast("success",`${DOCS.find(d=>d.id===docId)?.label||docId} subido a Supabase â`);
       },500);
     }catch(err){
       setUploading(p=>{const n={...p};delete n[docId];return n;});
@@ -507,11 +507,11 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
 
   const aprobar=(id)=>{
     setPeriodos(p=>({...p,[mk]:{...p[mk],docs:{...p[mk].docs,[id]:{...p[mk].docs[id],status:"aprobado"}}}}));
-    addToast("success",`${DOCS.find(d=>d.id===id)?.label} — Aprobado`);setSel(null);
+    addToast("success",`${DOCS.find(d=>d.id===id)?.label} â Aprobado`);setSel(null);
   };
   const rechazar=(id)=>{
     setPeriodos(p=>({...p,[mk]:{...p[mk],docs:{...p[mk].docs,[id]:{status:"pendiente",nombre:null,fecha:null,size:null,url:null,by:null}}}}));
-    addToast("error",`${DOCS.find(d=>d.id===id)?.label} — Rechazado`);setSel(null);
+    addToast("error",`${DOCS.find(d=>d.id===id)?.label} â Rechazado`);setSel(null);
   };
 
   const nubeCount=DOCS.reduce((a,d)=>a+(per?.docs[d.id]?.url?1:0),0);
@@ -521,7 +521,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
     .filter(([cid])=>cid!=="laboral")
     .map(([cid,def])=>({cid,def,docs:DOCS_BASE.filter(d=>d.cat===cid).map(d=>({...d,doc:per?.docs[d.id]}))}));
 
-  // Resumen nómina total
+  // Resumen nÃ³mina total
   const totalSalarios = TRABAJADORES.reduce((a,t)=>a+t.salario,0);
   const nomWorkersStatus = TRABAJADORES.map(t=>{
     const pdf = per?.docs[`nom_pdf_${t.id}`];
@@ -539,16 +539,16 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
     <div>
       <input ref={fileRef} type="file" accept=".pdf,.xml" style={{display:"none"}} onChange={e=>onFile(e,fileRef.current._did)}/>
 
-      {/* PERÍODO */}
+      {/* PERÃODO */}
       <div className="card mb16">
         <div className="card-body">
           <div className="flex g24 aic mb16">
             <div>
-              <div className="form-lbl">AÑO</div>
+              <div className="form-lbl">AÃO</div>
               <div className="flex g8">{[2025,2026].map(y=><button key={y} className={`ptab ${yr===y?"sel":""}`} onClick={()=>setYr(y)}>{y}</button>)}</div>
             </div>
             <div style={{flex:1}}>
-              <div className="form-lbl">PERÍODO MENSUAL</div>
+              <div className="form-lbl">PERÃODO MENSUAL</div>
               <div className="flex" style={{gap:5,flexWrap:"wrap"}}>
                 {MESES.map((m,i)=>{
                   const k=`${yr}-${String(i+1).padStart(2,"0")}`;
@@ -573,7 +573,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
 
       <div className="cloud-info">
         <Ic d={I.cloud} s={16}/>
-        <span style={{flex:1}}>Cloud Storage activo — <strong>storage.micsa.com/repse/{mk}/</strong></span>
+        <span style={{flex:1}}>Cloud Storage activo â <strong>storage.micsa.com/repse/{mk}/</strong></span>
         <span className="mono t11">{nubeCount} archivos sincronizados</span>
       </div>
 
@@ -595,7 +595,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
         );
       })}
 
-      {/* NÓMINA — sección especial por trabajador */}
+      {/* NÃMINA â secciÃ³n especial por trabajador */}
       <div className="mb24">
         <div className="cat-hdr">
           <div className="cat-dot" style={{background:defLaboral.color}}/>
@@ -604,22 +604,22 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
           <span className="cat-cnt">{nomComplete}/{TRABAJADORES.length} completos</span>
         </div>
 
-        {/* Resumen nómina */}
+        {/* Resumen nÃ³mina */}
         <div style={{background:"#E0F2FE",border:"1px solid #BAE6FD",borderRadius:10,padding:"13px 16px",marginBottom:12,display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <Ic d={I.star} s={15} c="#0E7490"/>
-            <span style={{fontSize:12,fontWeight:700,color:"#0E7490"}}>Zentric · CFDI Nómina</span>
+            <span style={{fontSize:12,fontWeight:700,color:"#0E7490"}}>Zentric Â· CFDI NÃ³mina</span>
           </div>
           <div className="flex aic g8 mono t11" style={{color:"#0E7490"}}>
             <span>6 trabajadores</span>
             <span style={{opacity:.4}}>|</span>
-            <span>Total nómina: ${totalSalarios.toLocaleString()}/mes</span>
+            <span>Total nÃ³mina: ${totalSalarios.toLocaleString()}/mes</span>
             <span style={{opacity:.4}}>|</span>
             <span>{nomComplete*2}/{TRABAJADORES.length*2} archivos OK</span>
           </div>
           <div style={{marginLeft:"auto"}}>
             <span className={`badge ${nomComplete===TRABAJADORES.length?"bg":nomComplete>0?"ba":"br"}`}>
-              {nomComplete===TRABAJADORES.length?"✓ Nómina Completa":`${nomComplete}/${TRABAJADORES.length} trabajadores`}
+              {nomComplete===TRABAJADORES.length?"â NÃ³mina Completa":`${nomComplete}/${TRABAJADORES.length} trabajadores`}
             </span>
           </div>
         </div>
@@ -637,12 +637,12 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
                 </div>
                 <div style={{flex:1}}>
                   <div style={{fontWeight:700,fontSize:13}}>{w.nombre}</div>
-                  <div style={{fontSize:11,color:"var(--txt3)"}}>{w.puesto} · <span className="mono">${w.salario.toLocaleString()}/mes</span></div>
+                  <div style={{fontSize:11,color:"var(--txt3)"}}>{w.puesto} Â· <span className="mono">${w.salario.toLocaleString()}/mes</span></div>
                 </div>
                 <div style={{display:"flex",gap:6,alignItems:"center"}}>
                   <span style={{fontSize:10,fontWeight:600,padding:"2px 8px",borderRadius:4,background:w.pdfOk?"var(--green-lt)":w.pdfUp?"var(--amber-lt)":"var(--surface)",color:w.pdfOk?"var(--green)":w.pdfUp?"var(--amber)":"var(--txt4)",border:`1px solid ${w.pdfOk?"var(--green-md)":w.pdfUp?"var(--amber-md)":"var(--border)"}`}}>PDF</span>
                   <span style={{fontSize:10,fontWeight:600,padding:"2px 8px",borderRadius:4,background:w.xmlOk?"var(--green-lt)":w.xmlUp?"var(--amber-lt)":"var(--surface)",color:w.xmlOk?"var(--green)":w.xmlUp?"var(--amber)":"var(--txt4)",border:`1px solid ${w.xmlOk?"var(--green-md)":w.xmlUp?"var(--amber-md)":"var(--border)"}`}}>XML</span>
-                  {w.complete&&<span className="badge bg" style={{fontSize:10}}>✓ Completo</span>}
+                  {w.complete&&<span className="badge bg" style={{fontSize:10}}>â Completo</span>}
                 </div>
               </div>
               {/* Docs del trabajador */}
@@ -667,7 +667,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
             <div className="modal-body">
               {sel.doc?.url&&<div className="alert alert-blue mb16"><Ic d={I.cloud} s={16}/><div><div className="alert-title">Guardado en la Nube</div><div className="alert-desc mono" style={{wordBreak:"break-all",fontSize:10}}>{sel.doc.url}</div></div></div>}
               <div className="g2" style={{gap:12,marginBottom:14}}>
-                {[["Archivo",sel.doc?.nombre||"—"],["Fecha",sel.doc?.fecha||"—"],["Tamaño",sel.doc?.size||"—"],["Subido por",sel.doc?.by||"—"]].map(([l,v])=>(
+                {[["Archivo",sel.doc?.nombre||"â"],["Fecha",sel.doc?.fecha||"â"],["TamaÃ±o",sel.doc?.size||"â"],["Subido por",sel.doc?.by||"â"]].map(([l,v])=>(
                   <div key={l} style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:8,padding:"11px 13px"}}>
                     <div className="form-lbl">{l}</div>
                     <div style={{fontSize:13,fontWeight:500}}>{v}</div>
@@ -676,7 +676,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
               </div>
               <div style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:8,padding:"11px 13px"}}>
                 <div className="form-lbl">ESTADO</div>
-                {sel.doc?.status==="aprobado"?<span className="badge bg"><Ic d={I.check} s={10}/>Aprobado</span>:<span className="badge ba"><Ic d={I.eye} s={10}/>Pendiente de Aprobación</span>}
+                {sel.doc?.status==="aprobado"?<span className="badge bg"><Ic d={I.check} s={10}/>Aprobado</span>:<span className="badge ba"><Ic d={I.eye} s={10}/>Pendiente de AprobaciÃ³n</span>}
               </div>
             </div>
             <div className="modal-foot">
@@ -690,7 +690,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
   );
 };
 
-// ── NUBE ──────────────────────────────────────────────────────────────────────
+// ââ NUBE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const Nube = ({periodos}) => {
   const totalNube=Object.values(periodos).reduce((a,p)=>a+Object.values(p.docs).filter(d=>d.url).length,0);
   const totalMB=(totalNube*1.4).toFixed(1);
@@ -709,7 +709,7 @@ const Nube = ({periodos}) => {
         {[
           {ic:I.cloud,   lbl:"Archivos en Nube",    val:totalNube,     col:"blue",   sub:"documentos almacenados"},
           {ic:I.package, lbl:"Almacenamiento Usado", val:`${totalMB} MB`, col:"purple", sub:"de 50 GB disponibles"},
-          {ic:I.folder,  lbl:"Períodos con Archivos",val:Object.values(periodos).filter(p=>Object.values(p.docs).some(d=>d.url)).length,col:"green",sub:"meses archivados"},
+          {ic:I.folder,  lbl:"PerÃ­odos con Archivos",val:Object.values(periodos).filter(p=>Object.values(p.docs).some(d=>d.url)).length,col:"green",sub:"meses archivados"},
         ].map((s,i)=>(
           <div key={i} className={`stat-card ${s.col}`}>
             <div className={`stat-ic ${s.col}`}><Ic d={s.ic} s={19}/></div>
@@ -722,7 +722,7 @@ const Nube = ({periodos}) => {
 
       <div className="card mb16">
         <div className="card-hdr">
-          <div><div className="card-title">Estado del Almacenamiento</div><div className="card-sub">storage.micsa.com — Cloud Storage</div></div>
+          <div><div className="card-title">Estado del Almacenamiento</div><div className="card-sub">storage.micsa.com â Cloud Storage</div></div>
           <div className="cloud-pill"><div className="cloud-dot"/>Activo y Sincronizado</div>
         </div>
         <div className="card-body">
@@ -734,7 +734,7 @@ const Nube = ({periodos}) => {
             </div>
           </div>
           <div className="g3">
-            {[["PDF","📄",Math.floor(totalNube*.7)],["XML","📋",Math.floor(totalNube*.2)],["Otros","📎",Math.floor(totalNube*.1)]].map(([l,ic,c])=>(
+            {[["PDF","ð",Math.floor(totalNube*.7)],["XML","ð",Math.floor(totalNube*.2)],["Otros","ð",Math.floor(totalNube*.1)]].map(([l,ic,c])=>(
               <div key={l} style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:8,padding:"14px 16px",textAlign:"center"}}>
                 <div style={{fontSize:24,marginBottom:5}}>{ic}</div>
                 <div style={{fontWeight:700,fontSize:18}}>{c}</div>
@@ -748,7 +748,7 @@ const Nube = ({periodos}) => {
       <div className="card">
         <div className="card-hdr"><div className="card-title">Archivos Recientes en la Nube</div><button className="btn btn-o btn-sm"><Ic d={I.refresh} s={13}/>Actualizar</button></div>
         <table className="table">
-          <thead><tr><th>DOCUMENTO</th><th>PERÍODO</th><th>CATEGORÍA</th><th>TAMAÑO</th><th>URL NUBE</th><th>ACCIÓN</th></tr></thead>
+          <thead><tr><th>DOCUMENTO</th><th>PERÃODO</th><th>CATEGORÃA</th><th>TAMAÃO</th><th>URL NUBE</th><th>ACCIÃN</th></tr></thead>
           <tbody>
             {recent.map((d,i)=>{
               const [y,m]=d.key.split("-");
@@ -775,7 +775,7 @@ const Nube = ({periodos}) => {
   );
 };
 
-// ── CLIENTES ──────────────────────────────────────────────────────────────────
+// ââ CLIENTES ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const Clientes = ({clientes, setClientes, periodos, addToast}) => {
   const now=new Date();
   const mk=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
@@ -793,7 +793,7 @@ const Clientes = ({clientes, setClientes, periodos, addToast}) => {
   };
   const simEnvio=()=>{
     setSending(true);
-    setTimeout(()=>{setSending(false);setEnvio(null);addToast("success",`Expediente enviado a ${envio.email} ✓`);},2200);
+    setTimeout(()=>{setSending(false);setEnvio(null);addToast("success",`Expediente enviado a ${envio.email} â`);},2200);
     addToast("info",`Generando expediente PDF para ${envio.nombre}...`);
   };
 
@@ -807,14 +807,14 @@ const Clientes = ({clientes, setClientes, periodos, addToast}) => {
       {v<100&&(
         <div className="alert alert-amber mb16">
           <Ic d={I.alert} s={18}/>
-          <div><div className="alert-title">Expediente Incompleto — {v}%</div><div className="alert-desc">Completa todos los documentos requeridos antes de enviar a clientes. Faltan {DOCS.filter(d=>d.req&&periodos[mk]?.docs[d.id]?.status!=="aprobado").length} documentos.</div></div>
+          <div><div className="alert-title">Expediente Incompleto â {v}%</div><div className="alert-desc">Completa todos los documentos requeridos antes de enviar a clientes. Faltan {DOCS.filter(d=>d.req&&periodos[mk]?.docs[d.id]?.status!=="aprobado").length} documentos.</div></div>
         </div>
       )}
 
       <div className="card">
         <div className="card-hdr"><div className="card-title">Clientes Registrados</div><div className="cloud-pill" style={{margin:0,padding:"5px 12px",fontSize:11}}><div className="cloud-dot"/>Sincronizado</div></div>
         <table className="table">
-          <thead><tr><th>EMPRESA</th><th>CORREO COMPLIANCE</th><th>DÍA LÍMITE</th><th>ESTADO</th><th>ACCIONES</th></tr></thead>
+          <thead><tr><th>EMPRESA</th><th>CORREO COMPLIANCE</th><th>DÃA LÃMITE</th><th>ESTADO</th><th>ACCIONES</th></tr></thead>
           <tbody>
             {clientes.map(c=>(
               <tr key={c.id}>
@@ -827,7 +827,7 @@ const Clientes = ({clientes, setClientes, periodos, addToast}) => {
                   </div>
                 </td>
                 <td className="mono t11 muted">{c.email}</td>
-                <td><span className="badge bgr mono">Día {c.dia}</span></td>
+                <td><span className="badge bgr mono">DÃ­a {c.dia}</span></td>
                 <td>{c.activo?<span className="badge bg">Activo</span>:<span className="badge bgr">Inactivo</span>}</td>
                 <td>
                   <div className="flex g8">
@@ -846,7 +846,7 @@ const Clientes = ({clientes, setClientes, periodos, addToast}) => {
           <div className="modal" onClick={e=>e.stopPropagation()}>
             <div className="modal-hdr"><div className="modal-title">Nuevo Cliente</div><button className="btn btn-o btn-sm" onClick={()=>setModal(false)}><Ic d={I.x} s={13}/></button></div>
             <div className="modal-body">
-              {[["EMPRESA / PLANTA","nombre","Ej: Carrier, Ternium","text"],["CORREO COMPLIANCE","email","compliance@empresa.com","email"],["DÍA LÍMITE (1–28)","dia","20","number"]].map(([l,k,ph,t])=>(
+              {[["EMPRESA / PLANTA","nombre","Ej: Carrier, Ternium","text"],["CORREO COMPLIANCE","email","compliance@empresa.com","email"],["DÃA LÃMITE (1â28)","dia","20","number"]].map(([l,k,ph,t])=>(
                 <div className="form-group" key={k}>
                   <label className="form-lbl">{l}</label>
                   <input className="form-input" type={t} placeholder={ph} value={form[k]} onChange={e=>setForm({...form,[k]:t==="number"?parseInt(e.target.value):e.target.value})}/>
@@ -865,9 +865,9 @@ const Clientes = ({clientes, setClientes, periodos, addToast}) => {
       {envio&&(
         <div className="modal-ov" onClick={()=>!sending&&setEnvio(null)}>
           <div className="modal" onClick={e=>e.stopPropagation()}>
-            <div className="modal-hdr"><div className="modal-title">Confirmar Envío de Expediente</div></div>
+            <div className="modal-hdr"><div className="modal-title">Confirmar EnvÃ­o de Expediente</div></div>
             <div className="modal-body">
-              <div className="alert alert-green mb16"><Ic d={I.check} s={18}/><div><div className="alert-title">Expediente 100% Completo</div><div className="alert-desc">Todos los documentos requeridos están aprobados y almacenados en la nube</div></div></div>
+              <div className="alert alert-green mb16"><Ic d={I.check} s={18}/><div><div className="alert-title">Expediente 100% Completo</div><div className="alert-desc">Todos los documentos requeridos estÃ¡n aprobados y almacenados en la nube</div></div></div>
               <div style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:10,padding:16}}>
                 <div className="flex aic g12 mb12">
                   <div style={{width:42,height:42,borderRadius:10,background:envio.color+"22",border:`2px solid ${envio.color}`,display:"flex",alignItems:"center",justifyContent:"center"}}><Ic d={I.building} s={20} c={envio.color}/></div>
@@ -875,7 +875,7 @@ const Clientes = ({clientes, setClientes, periodos, addToast}) => {
                 </div>
                 <div className="divider"/>
                 <div className="form-lbl">ASUNTO DEL CORREO</div>
-                <div style={{fontWeight:600,color:"var(--blue)",fontSize:13,fontFamily:"var(--mono)",marginBottom:12}}>Expediente REPSE — {MESES[now.getMonth()]} {now.getFullYear()} — MICSA S.A. de C.V.</div>
+                <div style={{fontWeight:600,color:"var(--blue)",fontSize:13,fontFamily:"var(--mono)",marginBottom:12}}>Expediente REPSE â {MESES[now.getMonth()]} {now.getFullYear()} â MICSA S.A. de C.V.</div>
                 <div className="form-lbl">ADJUNTO</div>
                 <div style={{fontSize:13,color:"var(--txt2)"}}>PDF compilado con todos los {DOCS.filter(d=>d.req).length} documentos requeridos + link de descarga desde nube</div>
               </div>
@@ -891,7 +891,7 @@ const Clientes = ({clientes, setClientes, periodos, addToast}) => {
   );
 };
 
-// ── ALERTAS ───────────────────────────────────────────────────────────────────
+// ââ ALERTAS âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const Alertas = ({periodos}) => {
   const now=new Date();
   const mk=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
@@ -899,9 +899,9 @@ const Alertas = ({periodos}) => {
   const criticos=DOCS.filter(d=>d.req&&per?.docs[d.id]?.status!=="aprobado");
 
   const venc=[
-    {label:"Opinión IMSS",           dias:8,  tipo:"rojo"},
-    {label:"Opinión SAT",            dias:14, tipo:"amarillo"},
-    {label:"Póliza RC",              dias:30, tipo:"amarillo"},
+    {label:"OpiniÃ³n IMSS",           dias:8,  tipo:"rojo"},
+    {label:"OpiniÃ³n SAT",            dias:14, tipo:"amarillo"},
+    {label:"PÃ³liza RC",              dias:30, tipo:"amarillo"},
     {label:"Constancia REPSE",       dias:52, tipo:"verde"},
     {label:"Constancia Sit. Fiscal", dias:90, tipo:"verde"},
   ];
@@ -909,22 +909,22 @@ const Alertas = ({periodos}) => {
   return (
     <div>
       {criticos.length===0
-        ?<div className="alert alert-green mb16"><Ic d={I.check} s={20}/><div><div className="alert-title">Expediente Completo ✓</div><div className="alert-desc">Todos los documentos requeridos de {MESES[now.getMonth()]} {now.getFullYear()} están aprobados y en la nube.</div></div></div>
-        :<div className="alert alert-red mb16"><Ic d={I.alert} s={20}/><div><div className="alert-title">{criticos.length} documento(s) requerido(s) pendiente(s)</div><div className="alert-desc">El expediente no puede enviarse hasta completarlos. Ve al módulo Documentos para cargarlos.</div></div></div>
+        ?<div className="alert alert-green mb16"><Ic d={I.check} s={20}/><div><div className="alert-title">Expediente Completo â</div><div className="alert-desc">Todos los documentos requeridos de {MESES[now.getMonth()]} {now.getFullYear()} estÃ¡n aprobados y en la nube.</div></div></div>
+        :<div className="alert alert-red mb16"><Ic d={I.alert} s={20}/><div><div className="alert-title">{criticos.length} documento(s) requerido(s) pendiente(s)</div><div className="alert-desc">El expediente no puede enviarse hasta completarlos. Ve al mÃ³dulo Documentos para cargarlos.</div></div></div>
       }
 
       {criticos.length>0&&(
         <div className="card mb22">
-          <div className="card-hdr"><div className="card-title" style={{color:"var(--red)"}}>Documentos Críticos Faltantes</div><span className="badge br">{criticos.length} pendientes</span></div>
+          <div className="card-hdr"><div className="card-title" style={{color:"var(--red)"}}>Documentos CrÃ­ticos Faltantes</div><span className="badge br">{criticos.length} pendientes</span></div>
           <table className="table">
-            <thead><tr><th>DOCUMENTO</th><th>CATEGORÍA</th><th>OBLIGATORIO</th><th>ESTADO</th></tr></thead>
+            <thead><tr><th>DOCUMENTO</th><th>CATEGORÃA</th><th>OBLIGATORIO</th><th>ESTADO</th></tr></thead>
             <tbody>
               {criticos.map(d=>(
                 <tr key={d.id}>
                   <td className="fw7">{d.label}</td>
                   <td><span style={{fontSize:11,fontWeight:600,color:CAT[d.cat].color,background:CAT[d.cat].bg,padding:"3px 8px",borderRadius:4}}>{CAT[d.cat].label.split(" ")[0]}</span></td>
-                  <td><span className="badge br">Sí, requerido</span></td>
-                  <td>{per?.docs[d.id]?.status==="revision"?<span className="badge ba"><Ic d={I.eye} s={10}/>En Revisión</span>:<span className="badge bgr"><Ic d={I.clock} s={10}/>Sin Cargar</span>}</td>
+                  <td><span className="badge br">SÃ­, requerido</span></td>
+                  <td>{per?.docs[d.id]?.status==="revision"?<span className="badge ba"><Ic d={I.eye} s={10}/>En RevisiÃ³n</span>:<span className="badge bgr"><Ic d={I.clock} s={10}/>Sin Cargar</span>}</td>
                 </tr>
               ))}
             </tbody>
@@ -933,22 +933,22 @@ const Alertas = ({periodos}) => {
       )}
 
       <div className="card">
-        <div className="card-hdr"><div><div className="card-title">Próximos Vencimientos</div><div className="card-sub">Documentos con vigencia próxima a expirar</div></div></div>
+        <div className="card-hdr"><div><div className="card-title">PrÃ³ximos Vencimientos</div><div className="card-sub">Documentos con vigencia prÃ³xima a expirar</div></div></div>
         <div className="card-body">
           {venc.map((v,i)=>{
             const col=v.tipo==="rojo"?"var(--red)":v.tipo==="amarillo"?"var(--amber)":"var(--green)";
             const bg=v.tipo==="rojo"?"var(--red-lt)":v.tipo==="amarillo"?"var(--amber-lt)":"var(--green-lt)";
             const bc=v.tipo==="rojo"?"br":v.tipo==="amarillo"?"ba":"bg";
-            const lbl=v.tipo==="rojo"?"Urgente":v.tipo==="amarillo"?"Atención":"Vigente";
+            const lbl=v.tipo==="rojo"?"Urgente":v.tipo==="amarillo"?"AtenciÃ³n":"Vigente";
             return (
               <div key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"13px 0",borderBottom:i<venc.length-1?"1px solid var(--border)":"none"}}>
                 <div style={{width:40,height:40,borderRadius:10,background:bg,display:"flex",alignItems:"center",justifyContent:"center",color:col,flexShrink:0}}><Ic d={I.clock} s={18}/></div>
                 <div style={{flex:1}}>
                   <div className="fw7" style={{fontSize:14}}>{v.label}</div>
-                  <div style={{fontSize:12,color:"var(--txt3)"}}>Vence en {v.dias} días</div>
+                  <div style={{fontSize:12,color:"var(--txt3)"}}>Vence en {v.dias} dÃ­as</div>
                 </div>
                 <div className="progress" style={{width:100}}><div className="pf" style={{width:`${Math.min(100,(v.dias/30)*100)}%`,background:col}}/></div>
-                <span className="mono fw7" style={{color:col,fontSize:13,minWidth:55,textAlign:"right"}}>{v.dias} días</span>
+                <span className="mono fw7" style={{color:col,fontSize:13,minWidth:55,textAlign:"right"}}>{v.dias} dÃ­as</span>
                 <span className={`badge ${bc}`}>{lbl}</span>
               </div>
             );
@@ -959,11 +959,11 @@ const Alertas = ({periodos}) => {
   );
 };
 
-// ── ICSOE ─────────────────────────────────────────────────────────────────────
+// ââ ICSOE âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const PERIODOS_CUATRIM = [
-  { id:"c1", label:"1er Cuatrimestre", meses:"Enero — Abril",    limite:"Mayo 17" },
-  { id:"c2", label:"2do Cuatrimestre", meses:"Mayo — Agosto",    limite:"Sep 17"  },
-  { id:"c3", label:"3er Cuatrimestre", meses:"Sep — Diciembre",  limite:"Ene 17"  },
+  { id:"c1", label:"1er Cuatrimestre", meses:"Enero â Abril",    limite:"Mayo 17" },
+  { id:"c2", label:"2do Cuatrimestre", meses:"Mayo â Agosto",    limite:"Sep 17"  },
+  { id:"c3", label:"3er Cuatrimestre", meses:"Sep â Diciembre",  limite:"Ene 17"  },
 ];
 
 const initICSO = () => {
@@ -995,7 +995,7 @@ const ICSOE = ({addToast}) => {
   const simPresentar=(k)=>{
     const folio=`ICSOE-${k}-${Date.now().toString().slice(-6)}`;
     setRegistros(p=>({...p,[k]:{...p[k],status:"presentada",folio,acuse:`acuse_${k}.pdf`}}));
-    addToast("success",`Informativa presentada — Folio ${folio}`);
+    addToast("success",`Informativa presentada â Folio ${folio}`);
     setSel(null);
   };
 
@@ -1004,8 +1004,8 @@ const ICSOE = ({addToast}) => {
       <div className="alert alert-blue mb16">
         <Ic d={I.info} s={18}/>
         <div>
-          <div className="alert-title">Obligación Cuatrimestral — Art. 15-A Ley del Seguro Social</div>
-          <div className="alert-desc">MICSA debe reportar al IMSS los contratos de servicios especializados celebrados en cada cuatrimestre. El reporte se realiza en el portal ICSOE con e.Firma del representante legal. Plazo: día 17 del mes siguiente al cierre del cuatrimestre.</div>
+          <div className="alert-title">ObligaciÃ³n Cuatrimestral â Art. 15-A Ley del Seguro Social</div>
+          <div className="alert-desc">MICSA debe reportar al IMSS los contratos de servicios especializados celebrados en cada cuatrimestre. El reporte se realiza en el portal ICSOE con e.Firma del representante legal. Plazo: dÃ­a 17 del mes siguiente al cierre del cuatrimestre.</div>
         </div>
       </div>
 
@@ -1026,10 +1026,10 @@ const ICSOE = ({addToast}) => {
       {[curY,curY-1].map(y=>(
         <div key={y} className="card mb16">
           <div className="card-hdr">
-            <div><div className="card-title">Año {y}</div><div className="card-sub">Informativas cuatrimestrales ICSOE</div></div>
+            <div><div className="card-title">AÃ±o {y}</div><div className="card-sub">Informativas cuatrimestrales ICSOE</div></div>
           </div>
           <table className="table">
-            <thead><tr><th>PERÍODO</th><th>MESES</th><th>FECHA LÍMITE</th><th>ESTADO</th><th>FOLIO</th><th>CONTRATOS</th><th>ACCIÓN</th></tr></thead>
+            <thead><tr><th>PERÃODO</th><th>MESES</th><th>FECHA LÃMITE</th><th>ESTADO</th><th>FOLIO</th><th>CONTRATOS</th><th>ACCIÃN</th></tr></thead>
             <tbody>
               {PERIODOS_CUATRIM.map(c=>{
                 const k=`${y}-${c.id}`;
@@ -1038,14 +1038,14 @@ const ICSOE = ({addToast}) => {
                   <tr key={k}>
                     <td className="fw7">{c.label}</td>
                     <td className="mono t11 muted">{c.meses}</td>
-                    <td><span className="badge bgr mono t11">Día 17 {c.limite}</span></td>
+                    <td><span className="badge bgr mono t11">DÃ­a 17 {c.limite}</span></td>
                     <td>{stBadge(r?.status)}</td>
-                    <td className="mono t11" style={{color:"var(--blue)"}}>{r?.folio||"—"}</td>
+                    <td className="mono t11" style={{color:"var(--blue)"}}>{r?.folio||"â"}</td>
                     <td className="mono t11">{r?.contratos?.length||0} contrato(s)</td>
                     <td>
                       <div className="flex g8">
                         <button className="btn btn-o btn-xs" onClick={()=>setSel({k,c,r,y})}><Ic d={I.eye} s={11}/>Detalle</button>
-                        {r?.status==="presentada"&&<button className="btn btn-o btn-xs" onClick={()=>{const doc=new jsPDF();doc.setFontSize(16);doc.text("ACUSE DE PRESENTACIÓN ICSOE",20,25);doc.setFontSize(11);doc.text(`Folio: ${r.folio}`,20,40);doc.text(`Período: ${c.label} ${y}`,20,50);doc.text(`Meses: ${c.meses}`,20,60);doc.text(`Fecha: ${new Date().toLocaleDateString("es-MX")}`,20,70);doc.text(`Contratos reportados: ${r.contratos?.length||0}`,20,80);doc.text("Estado: PRESENTADA",20,90);doc.save(`Acuse_ICSOE_${y}_${c.id}.pdf`);addToast("success","Acuse descargado");}}><Ic d={I.download} s={11}/>Acuse</button>}
+                        {r?.status==="presentada"&&<button className="btn btn-o btn-xs" onClick={()=>{const doc=new jsPDF();doc.setFontSize(16);doc.text("ACUSE DE PRESENTACIÃN ICSOE",20,25);doc.setFontSize(11);doc.text(`Folio: ${r.folio}`,20,40);doc.text(`PerÃ­odo: ${c.label} ${y}`,20,50);doc.text(`Meses: ${c.meses}`,20,60);doc.text(`Fecha: ${new Date().toLocaleDateString("es-MX")}`,20,70);doc.text(`Contratos reportados: ${r.contratos?.length||0}`,20,80);doc.text("Estado: PRESENTADA",20,90);doc.save(`Acuse_ICSOE_${y}_${c.id}.pdf`);addToast("success","Acuse descargado");}}><Ic d={I.download} s={11}/>Acuse</button>}
                       </div>
                     </td>
                   </tr>
@@ -1057,16 +1057,16 @@ const ICSOE = ({addToast}) => {
       ))}
 
       <div className="card">
-        <div className="card-hdr"><div className="card-title">Guías Oficiales IMSS — ICSOE</div></div>
+        <div className="card-hdr"><div className="card-title">GuÃ­as Oficiales IMSS â ICSOE</div></div>
         <div className="card-body">
           <div className="g2" style={{gap:10}}>
             {[
-              ["Alta de Usuarios Capturistas","Registra usuarios para captura de contratos","Guía 9"],
-              ["Captura de Informativa","Registra contratos del período cuatrimestral","Guía principal"],
-              ["Firma y Presentación","Firma con e.Firma y presenta ante el IMSS","Guía 5"],
-              ["Devolver Informativa","Corrige errores antes de firmar","Guía 4"],
-              ["Complementaria de Corrección","Corrige informativas ya presentadas","Guía 7"],
-              ["Acuse de Presentación","Descarga el acuse del período reportado","Portal ICSOE"],
+              ["Alta de Usuarios Capturistas","Registra usuarios para captura de contratos","GuÃ­a 9"],
+              ["Captura de Informativa","Registra contratos del perÃ­odo cuatrimestral","GuÃ­a principal"],
+              ["Firma y PresentaciÃ³n","Firma con e.Firma y presenta ante el IMSS","GuÃ­a 5"],
+              ["Devolver Informativa","Corrige errores antes de firmar","GuÃ­a 4"],
+              ["Complementaria de CorrecciÃ³n","Corrige informativas ya presentadas","GuÃ­a 7"],
+              ["Acuse de PresentaciÃ³n","Descarga el acuse del perÃ­odo reportado","Portal ICSOE"],
             ].map(([t,d,g])=>(
               <div key={t} style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:8,padding:"12px 14px",display:"flex",gap:12,alignItems:"flex-start"}}>
                 <div style={{width:36,height:36,borderRadius:8,background:"var(--blue-lt)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Ic d={I.file} s={16} c="var(--blue)"/></div>
@@ -1085,7 +1085,7 @@ const ICSOE = ({addToast}) => {
         <div className="modal-ov" onClick={()=>setSel(null)}>
           <div className="modal" onClick={e=>e.stopPropagation()}>
             <div className="modal-hdr">
-              <div><div className="modal-title">{sel.c.label} {sel.y}</div><div style={{fontSize:12,color:"var(--txt3)",marginTop:3}}>{sel.c.meses} · Límite: {sel.c.limite}</div></div>
+              <div><div className="modal-title">{sel.c.label} {sel.y}</div><div style={{fontSize:12,color:"var(--txt3)",marginTop:3}}>{sel.c.meses} Â· LÃ­mite: {sel.c.limite}</div></div>
               <button className="btn btn-o btn-sm" onClick={()=>setSel(null)}><Ic d={I.x} s={13}/></button>
             </div>
             <div className="modal-body">
@@ -1106,7 +1106,7 @@ const ICSOE = ({addToast}) => {
                   {sel.r.contratos.map(c=>(
                     <div key={c.id} style={{display:"flex",gap:10,alignItems:"center",padding:"8px 0",borderBottom:"1px solid var(--border)"}}>
                       <Ic d={I.building} s={15} c="var(--txt3)"/>
-                      <div style={{flex:1}}><div className="fw7 t13">{c.empresa}</div><div className="mono t11 muted">{c.rfc} · {c.trabajadores} trab.</div></div>
+                      <div style={{flex:1}}><div className="fw7 t13">{c.empresa}</div><div className="mono t11 muted">{c.rfc} Â· {c.trabajadores} trab.</div></div>
                       <div className="mono t12" style={{color:"var(--green)",fontWeight:700}}>${c.monto?.toLocaleString()}</div>
                     </div>
                   ))}
@@ -1115,8 +1115,8 @@ const ICSOE = ({addToast}) => {
             </div>
             <div className="modal-foot">
               <button className="btn btn-o" onClick={()=>setSel(null)}>Cerrar</button>
-              {sel.r?.status!=="presentada"&&<button className="btn btn-p" onClick={()=>simPresentar(sel.k)}><Ic d={I.send} s={13}/>Simular Presentación</button>}
-              {sel.r?.status==="presentada"&&<button className="btn btn-s" onClick={()=>{const doc=new jsPDF();doc.setFontSize(16);doc.text("ACUSE DE PRESENTACIÓN ICSOE",20,25);doc.setFontSize(11);doc.text(`Folio: ${sel.r.folio}`,20,40);doc.text(`Período: ${sel.c.label} ${sel.y}`,20,50);doc.text(`Meses: ${sel.c.meses}`,20,60);doc.text(`Fecha: ${new Date().toLocaleDateString("es-MX")}`,20,70);doc.text(`Contratos: ${sel.r.contratos?.length||0}`,20,80);doc.save(`Acuse_ICSOE_${sel.y}_${sel.c.id}.pdf`);addToast("success","Acuse descargado");setSel(null);}}><Ic d={I.download} s={13}/>Descargar Acuse</button>}
+              {sel.r?.status!=="presentada"&&<button className="btn btn-p" onClick={()=>simPresentar(sel.k)}><Ic d={I.send} s={13}/>Simular PresentaciÃ³n</button>}
+              {sel.r?.status==="presentada"&&<button className="btn btn-s" onClick={()=>{const doc=new jsPDF();doc.setFontSize(16);doc.text("ACUSE DE PRESENTACIÃN ICSOE",20,25);doc.setFontSize(11);doc.text(`Folio: ${sel.r.folio}`,20,40);doc.text(`PerÃ­odo: ${sel.c.label} ${sel.y}`,20,50);doc.text(`Meses: ${sel.c.meses}`,20,60);doc.text(`Fecha: ${new Date().toLocaleDateString("es-MX")}`,20,70);doc.text(`Contratos: ${sel.r.contratos?.length||0}`,20,80);doc.save(`Acuse_ICSOE_${sel.y}_${sel.c.id}.pdf`);addToast("success","Acuse descargado");setSel(null);}}><Ic d={I.download} s={13}/>Descargar Acuse</button>}
             </div>
           </div>
         </div>
@@ -1125,12 +1125,12 @@ const ICSOE = ({addToast}) => {
   );
 };
 
-// ── SISUB ─────────────────────────────────────────────────────────────────────
+// ââ SISUB âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const CLIENTES_SISUB = [
   { id:"c1", nombre:"Ironcast S.A. de C.V.",   rfc:"IRO8501154S6", planta:"Planta Monclova",   color:"#0967D2" },
-  { id:"c2", nombre:"Carrier de México",        rfc:"CAR920115P27", planta:"Planta Ramos Arizpe",color:"#5521B5" },
-  { id:"c3", nombre:"Ternium México S.A.",       rfc:"TER951020JK5", planta:"Planta Guerrero",    color:"#0E8A5C" },
-  { id:"c4", nombre:"AHMSA",                    rfc:"AHM570101AB2", planta:"Planta Acerías",     color:"#B45309" },
+  { id:"c2", nombre:"Carrier de MÃ©xico",        rfc:"CAR920115P27", planta:"Planta Ramos Arizpe",color:"#5521B5" },
+  { id:"c3", nombre:"Ternium MÃ©xico S.A.",       rfc:"TER951020JK5", planta:"Planta Guerrero",    color:"#0E8A5C" },
+  { id:"c4", nombre:"AHMSA",                    rfc:"AHM570101AB2", planta:"Planta AcerÃ­as",     color:"#B45309" },
 ];
 
 const initSISUB = () => ({
@@ -1160,7 +1160,7 @@ const SISUB = ({ addToast }) => {
       ...p,
       reportes: p.reportes.map(r => r.id === rid ? { ...r, presentado: true, fecha: new Date().toISOString().split("T")[0] } : r)
     }));
-    addToast("success", "Reporte de trabajadores presentado al cliente ✓");
+    addToast("success", "Reporte de trabajadores presentado al cliente â");
     setSelReporte(null);
   };
 
@@ -1179,7 +1179,7 @@ const SISUB = ({ addToast }) => {
       <div className="alert alert-blue mb16">
         <Ic d={I.info} s={18}/>
         <div>
-          <div className="alert-title">Sistema de Información de Subcontratación (SISUB)</div>
+          <div className="alert-title">Sistema de InformaciÃ³n de SubcontrataciÃ³n (SISUB)</div>
           <div className="alert-desc">MICSA como prestador de servicios especializados debe reportar mensualmente a cada cliente contratante los trabajadores que ingresan a sus instalaciones, conforme al Art. 13 de la Ley Federal del Trabajo reformada.</div>
         </div>
       </div>
@@ -1213,7 +1213,7 @@ const SISUB = ({ addToast }) => {
               <button className="btn btn-p btn-sm" onClick={()=>setModalAdd(true)}><Ic d={I.plus} s={13}/>Agregar</button>
             </div>
             <table className="table">
-              <thead><tr><th>RAZÓN SOCIAL</th><th>RFC</th><th>CONSTANCIA REPSE</th><th>VIGENCIA</th><th>TRABAJADORES</th><th>ESTADO</th></tr></thead>
+              <thead><tr><th>RAZÃN SOCIAL</th><th>RFC</th><th>CONSTANCIA REPSE</th><th>VIGENCIA</th><th>TRABAJADORES</th><th>ESTADO</th></tr></thead>
               <tbody>
                 {data.subcontratistas.map(s=>(
                   <tr key={s.id}>
@@ -1258,10 +1258,10 @@ const SISUB = ({ addToast }) => {
           <div className="alert alert-amber mb16">
             <Ic d={I.alert} s={16}/>
             <div><div className="alert-title">Reporte mensual de trabajadores por cliente</div>
-            <div className="alert-desc">Debes informar a cada cliente los trabajadores que ingresan a sus instalaciones. Incluye nombre, NSS, puesto y período de servicio.</div></div>
+            <div className="alert-desc">Debes informar a cada cliente los trabajadores que ingresan a sus instalaciones. Incluye nombre, NSS, puesto y perÃ­odo de servicio.</div></div>
           </div>
           <div className="flex aic g12 mb16">
-            <span className="form-lbl" style={{margin:0}}>PERÍODO:</span>
+            <span className="form-lbl" style={{margin:0}}>PERÃODO:</span>
             <div className="flex g6">{[2025,2026].map(y=><button key={y} className={`ptab ${yrRep===y?"sel":""}`} onClick={()=>setYrRep(y)}>{y}</button>)}</div>
             <div className="flex g6">{MESES.map((m,i)=><button key={i} className={`ptab ${mesRep===i?"sel":""}`} onClick={()=>setMesRep(i)} style={{fontSize:11}}>{m.slice(0,3)}</button>)}</div>
           </div>
@@ -1282,7 +1282,7 @@ const SISUB = ({ addToast }) => {
                   </div>
                   <div className="card-body" style={{paddingTop:12,paddingBottom:12}}>
                     <div className="flex jb aic mb12">
-                      <span className="t12 muted">{c.planta} · <span className="mono fw7" style={{color:c.color}}>{activos} trabajadores</span></span>
+                      <span className="t12 muted">{c.planta} Â· <span className="mono fw7" style={{color:c.color}}>{activos} trabajadores</span></span>
                       <button className="btn btn-o btn-xs" onClick={()=>setSelReporte({c,rep})}><Ic d={I.eye} s={11}/>Ver / Editar</button>
                     </div>
                     <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
@@ -1307,13 +1307,13 @@ const SISUB = ({ addToast }) => {
         <div className="modal-ov" onClick={()=>setSelReporte(null)}>
           <div className="modal" style={{width:580}} onClick={e=>e.stopPropagation()}>
             <div className="modal-hdr">
-              <div><div className="modal-title">Reporte — {selReporte.c.nombre}</div><div style={{fontSize:12,color:"var(--txt3)",marginTop:3}}>{MESES[mesRep]} {yrRep} · {selReporte.c.planta}</div></div>
+              <div><div className="modal-title">Reporte â {selReporte.c.nombre}</div><div style={{fontSize:12,color:"var(--txt3)",marginTop:3}}>{MESES[mesRep]} {yrRep} Â· {selReporte.c.planta}</div></div>
               <button className="btn btn-o btn-sm" onClick={()=>setSelReporte(null)}><Ic d={I.x} s={13}/></button>
             </div>
             <div className="modal-body">
               <div className="alert alert-blue mb16" style={{margin:"0 0 14px"}}>
                 <Ic d={I.info} s={14}/>
-                <div style={{fontSize:12}}>Selecciona los trabajadores que ingresaron a <strong>{selReporte.c.planta}</strong> este período</div>
+                <div style={{fontSize:12}}>Selecciona los trabajadores que ingresaron a <strong>{selReporte.c.planta}</strong> este perÃ­odo</div>
               </div>
               {selReporte.rep?.trabajadores.map(t=>(
                 <div key={t.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:"1px solid var(--border)"}}>
@@ -1321,7 +1321,7 @@ const SISUB = ({ addToast }) => {
                   <div style={{width:34,height:34,borderRadius:"50%",background:"var(--surface2)",border:"2px solid var(--border)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:"var(--txt3)",flexShrink:0}}>{t.nombre.charAt(0)}</div>
                   <div style={{flex:1}}>
                     <div className="fw7 t13">{t.nombre}</div>
-                    <div className="t11 muted">{t.puesto} · <span className="mono">${t.salario.toLocaleString()}/mes</span></div>
+                    <div className="t11 muted">{t.puesto} Â· <span className="mono">${t.salario.toLocaleString()}/mes</span></div>
                   </div>
                   <span className={`badge ${t.activo?"bg":"bgr"}`}>{t.activo?"Incluido":"Excluido"}</span>
                 </div>
@@ -1338,11 +1338,11 @@ const SISUB = ({ addToast }) => {
   );
 };
 
-// ── FONACOT ───────────────────────────────────────────────────────────────────
+// ââ FONACOT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const initFONACOT = () => ({
   creditos: [
-    { id:"f1", wid:"w1", trabajador:"Sergio Santibáñez",  numCredito:"FON-2024-0381-4", monto:18000, saldo:12400, descuento:800,  inicio:"2024-03-01", fin:"2026-03-01", status:"activo" },
-    { id:"f2", wid:"w3", trabajador:"Juan Sariñana",       numCredito:"FON-2024-1122-7", monto:25000, saldo:19500, descuento:1100, inicio:"2024-06-15", fin:"2026-12-15", status:"activo" },
+    { id:"f1", wid:"w1", trabajador:"Sergio SantibÃ¡Ã±ez",  numCredito:"FON-2024-0381-4", monto:18000, saldo:12400, descuento:800,  inicio:"2024-03-01", fin:"2026-03-01", status:"activo" },
+    { id:"f2", wid:"w3", trabajador:"Juan SariÃ±ana",       numCredito:"FON-2024-1122-7", monto:25000, saldo:19500, descuento:1100, inicio:"2024-06-15", fin:"2026-12-15", status:"activo" },
     { id:"f3", wid:"w5", trabajador:"Hugo de Alba",        numCredito:"FON-2023-9045-2", monto:15000, saldo:3200,  descuento:600,  inicio:"2023-09-01", fin:"2025-09-01", status:"liquidado" },
   ],
   pagos: Array.from({length:6},(_,i)=>{
@@ -1351,8 +1351,8 @@ const initFONACOT = () => ({
       id:`p${i+1}`,
       periodo:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`,
       total:1900, detalle:[
-        {wid:"w1",nombre:"Sergio Santibáñez",monto:800},
-        {wid:"w3",nombre:"Juan Sariñana",monto:1100},
+        {wid:"w1",nombre:"Sergio SantibÃ¡Ã±ez",monto:800},
+        {wid:"w3",nombre:"Juan SariÃ±ana",monto:1100},
       ],
       pagado:i>0, fecha:i>0?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-17`:null,
     };
@@ -1367,7 +1367,7 @@ const FONACOT = ({ addToast }) => {
 
   const simPagar=(pid)=>{
     setData(p=>({...p,pagos:p.pagos.map(pg=>pg.id!==pid?pg:{...pg,pagado:true,fecha:new Date().toISOString().split("T")[0]})}));
-    addToast("success","Descuento FONACOT registrado como pagado ✓");
+    addToast("success","Descuento FONACOT registrado como pagado â");
     setSel(null);
   };
 
@@ -1380,8 +1380,8 @@ const FONACOT = ({ addToast }) => {
     <div>
       <div className="g3 mb16">
         {[
-          {lbl:"Créditos Activos",     val:activos.length,                 col:"blue",  ic:I.star,  sub:`de ${data.creditos.length} totales`},
-          {lbl:"Descuento Mensual",    val:`$${totalDesc.toLocaleString()}`,col:"amber", ic:I.chart, sub:"retención nómina"},
+          {lbl:"CrÃ©ditos Activos",     val:activos.length,                 col:"blue",  ic:I.star,  sub:`de ${data.creditos.length} totales`},
+          {lbl:"Descuento Mensual",    val:`$${totalDesc.toLocaleString()}`,col:"amber", ic:I.chart, sub:"retenciÃ³n nÃ³mina"},
           {lbl:"Saldo Total Vigente",  val:`$${totalSaldo.toLocaleString()}`,col:"purple",ic:I.package,sub:"deuda activa trabajadores"},
         ].map((s,i)=>(
           <div key={i} className={`stat-card ${s.col}`}>
@@ -1396,13 +1396,13 @@ const FONACOT = ({ addToast }) => {
       {!pagoActual?.pagado&&(
         <div className="alert alert-red mb16">
           <Ic d={I.alert} s={18}/>
-          <div><div className="alert-title">Descuento FONACOT Pendiente — {MESES[now.getMonth()]} {now.getFullYear()}</div>
-          <div className="alert-desc">Total a retener y entregar a FONACOT: <strong>${totalDesc.toLocaleString()}</strong> — Debe reflejarse en los CFDIs de nómina del período actual.</div></div>
+          <div><div className="alert-title">Descuento FONACOT Pendiente â {MESES[now.getMonth()]} {now.getFullYear()}</div>
+          <div className="alert-desc">Total a retener y entregar a FONACOT: <strong>${totalDesc.toLocaleString()}</strong> â Debe reflejarse en los CFDIs de nÃ³mina del perÃ­odo actual.</div></div>
         </div>
       )}
 
       <div className="flex g8 mb16">
-        {[["creditos","Créditos",I.star],["pagos","Historial Pagos",I.chart],["cfdi","En Nómina CFDI",I.file]].map(([id,lbl,ic])=>(
+        {[["creditos","CrÃ©ditos",I.star],["pagos","Historial Pagos",I.chart],["cfdi","En NÃ³mina CFDI",I.file]].map(([id,lbl,ic])=>(
           <button key={id} className={`ptab ${tab===id?"sel":""}`} onClick={()=>setTab(id)} style={{display:"flex",alignItems:"center",gap:7}}>
             <Ic d={ic} s={13}/>{lbl}
           </button>
@@ -1411,9 +1411,9 @@ const FONACOT = ({ addToast }) => {
 
       {tab==="creditos"&&(
         <div className="card">
-          <div className="card-hdr"><div className="card-title">Créditos FONACOT de Trabajadores</div><button className="btn btn-p btn-sm"><Ic d={I.plus} s={13}/>Agregar Crédito</button></div>
+          <div className="card-hdr"><div className="card-title">CrÃ©ditos FONACOT de Trabajadores</div><button className="btn btn-p btn-sm"><Ic d={I.plus} s={13}/>Agregar CrÃ©dito</button></div>
           <table className="table">
-            <thead><tr><th>TRABAJADOR</th><th>NO. CRÉDITO</th><th>MONTO ORIGINAL</th><th>SALDO PENDIENTE</th><th>DESC. MENSUAL</th><th>VIGENCIA</th><th>ESTADO</th></tr></thead>
+            <thead><tr><th>TRABAJADOR</th><th>NO. CRÃDITO</th><th>MONTO ORIGINAL</th><th>SALDO PENDIENTE</th><th>DESC. MENSUAL</th><th>VIGENCIA</th><th>ESTADO</th></tr></thead>
             <tbody>
               {data.creditos.map(c=>(
                 <tr key={c.id} style={{cursor:"pointer"}} onClick={()=>setSel(c)}>
@@ -1426,8 +1426,8 @@ const FONACOT = ({ addToast }) => {
                   <td className="mono t11" style={{color:"var(--blue)"}}>{c.numCredito}</td>
                   <td className="mono">${c.monto.toLocaleString()}</td>
                   <td className="mono fw7" style={{color:c.status==="liquidado"?"var(--green)":"var(--amber)"}}>${c.saldo.toLocaleString()}</td>
-                  <td className="mono fw7" style={{color:"var(--red)"}}>{c.status==="activo"?`-$${c.descuento.toLocaleString()}`:"—"}</td>
-                  <td className="mono t11 muted">{c.inicio} → {c.fin}</td>
+                  <td className="mono fw7" style={{color:"var(--red)"}}>{c.status==="activo"?`-$${c.descuento.toLocaleString()}`:"â"}</td>
+                  <td className="mono t11 muted">{c.inicio} â {c.fin}</td>
                   <td><span className={`badge ${c.status==="activo"?"ba":c.status==="liquidado"?"bg":"br"}`}>{c.status==="activo"?"Activo":c.status==="liquidado"?"Liquidado":"Inactivo"}</span></td>
                 </tr>
               ))}
@@ -1440,15 +1440,15 @@ const FONACOT = ({ addToast }) => {
         <div className="card">
           <div className="card-hdr"><div className="card-title">Historial de Retenciones FONACOT</div><div className="card-sub">Pagos mensuales entregados a FONACOT</div></div>
           <table className="table">
-            <thead><tr><th>PERÍODO</th><th>TOTAL RETENIDO</th><th>TRABAJADORES</th><th>FECHA PAGO</th><th>ESTADO</th><th>ACCIÓN</th></tr></thead>
+            <thead><tr><th>PERÃODO</th><th>TOTAL RETENIDO</th><th>TRABAJADORES</th><th>FECHA PAGO</th><th>ESTADO</th><th>ACCIÃN</th></tr></thead>
             <tbody>
               {data.pagos.map(p=>(
                 <tr key={p.id}>
                   <td className="mono fw7">{p.periodo}</td>
                   <td className="mono fw7" style={{color:"var(--blue)"}}>${p.total.toLocaleString()}</td>
                   <td>{p.detalle.map(d=><span key={d.wid} className="mono t11 muted" style={{display:"block"}}>{d.nombre}: -${d.monto.toLocaleString()}</span>)}</td>
-                  <td className="mono t11">{p.fecha||"—"}</td>
-                  <td><span className={`badge ${p.pagado?"bg":"br"}`}>{p.pagado?"✓ Pagado":"Pendiente"}</span></td>
+                  <td className="mono t11">{p.fecha||"â"}</td>
+                  <td><span className={`badge ${p.pagado?"bg":"br"}`}>{p.pagado?"â Pagado":"Pendiente"}</span></td>
                   <td>{!p.pagado&&<button className="btn btn-s btn-xs" onClick={()=>simPagar(p.id)}><Ic d={I.check} s={11}/>Marcar Pagado</button>}</td>
                 </tr>
               ))}
@@ -1461,11 +1461,11 @@ const FONACOT = ({ addToast }) => {
         <div>
           <div className="alert alert-amber mb16">
             <Ic d={I.alert} s={16}/>
-            <div><div className="alert-title">Obligación en CFDI Nómina</div>
-            <div className="alert-desc">El descuento FONACOT debe aparecer como deducción en el XML del CFDI de nómina de cada trabajador con crédito activo. Verifica que Zentric tenga configurado el concepto de deducción FONACOT.</div></div>
+            <div><div className="alert-title">ObligaciÃ³n en CFDI NÃ³mina</div>
+            <div className="alert-desc">El descuento FONACOT debe aparecer como deducciÃ³n en el XML del CFDI de nÃ³mina de cada trabajador con crÃ©dito activo. Verifica que Zentric tenga configurado el concepto de deducciÃ³n FONACOT.</div></div>
           </div>
           <div className="card">
-            <div className="card-hdr"><div className="card-title">Desglose por Trabajador — Mes Actual</div></div>
+            <div className="card-hdr"><div className="card-title">Desglose por Trabajador â Mes Actual</div></div>
             <table className="table">
               <thead><tr><th>TRABAJADOR</th><th>SALARIO BASE</th><th>DESC. FONACOT</th><th>NETO APROXIMADO</th><th>EN CFDI</th></tr></thead>
               <tbody>
@@ -1475,14 +1475,14 @@ const FONACOT = ({ addToast }) => {
                     <tr key={t.id}>
                       <td className="fw7">{t.nombre}</td>
                       <td className="mono">${t.salario.toLocaleString()}</td>
-                      <td className="mono fw7" style={{color:cred?"var(--red)":"var(--txt4)"}}>{cred?`-$${cred.descuento.toLocaleString()}`:"Sin crédito"}</td>
+                      <td className="mono fw7" style={{color:cred?"var(--red)":"var(--txt4)"}}>{cred?`-$${cred.descuento.toLocaleString()}`:"Sin crÃ©dito"}</td>
                       <td className="mono fw7" style={{color:"var(--green)"}}>${(t.salario-(cred?.descuento||0)).toLocaleString()}</td>
                       <td>{cred?<span className="badge ba"><Ic d={I.alert} s={10}/>Verificar XML</span>:<span className="badge bg">N/A</span>}</td>
                     </tr>
                   );
                 })}
                 <tr style={{background:"var(--surface2)"}}>
-                  <td className="fw7" style={{color:"var(--txt2)"}}>TOTAL NÓMINA</td>
+                  <td className="fw7" style={{color:"var(--txt2)"}}>TOTAL NÃMINA</td>
                   <td className="mono fw7">${TRABAJADORES.reduce((a,t)=>a+t.salario,0).toLocaleString()}</td>
                   <td className="mono fw7" style={{color:"var(--red)"}}>-${totalDesc.toLocaleString()}</td>
                   <td className="mono fw7" style={{color:"var(--green)"}}>${(TRABAJADORES.reduce((a,t)=>a+t.salario,0)-totalDesc).toLocaleString()}</td>
@@ -1498,15 +1498,15 @@ const FONACOT = ({ addToast }) => {
         <div className="modal-ov" onClick={()=>setSel(null)}>
           <div className="modal" onClick={e=>e.stopPropagation()}>
             <div className="modal-hdr">
-              <div><div className="modal-title">Crédito FONACOT</div><div style={{fontSize:12,color:"var(--txt3)",marginTop:3}}>{sel.trabajador}</div></div>
+              <div><div className="modal-title">CrÃ©dito FONACOT</div><div style={{fontSize:12,color:"var(--txt3)",marginTop:3}}>{sel.trabajador}</div></div>
               <button className="btn btn-o btn-sm" onClick={()=>setSel(null)}><Ic d={I.x} s={13}/></button>
             </div>
             <div className="modal-body">
               <div className="g2" style={{gap:12}}>
-                {[["No. Crédito",sel.numCredito],["Trabajador",sel.trabajador],["Monto Original",`$${sel.monto.toLocaleString()}`],["Saldo Pendiente",`$${sel.saldo.toLocaleString()}`],["Descuento Mensual",`$${sel.descuento.toLocaleString()}`],["Vigencia",`${sel.inicio} → ${sel.fin}`]].map(([l,v])=>(
+                {[["No. CrÃ©dito",sel.numCredito],["Trabajador",sel.trabajador],["Monto Original",`$${sel.monto.toLocaleString()}`],["Saldo Pendiente",`$${sel.saldo.toLocaleString()}`],["Descuento Mensual",`$${sel.descuento.toLocaleString()}`],["Vigencia",`${sel.inicio} â ${sel.fin}`]].map(([l,v])=>(
                   <div key={l} style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:8,padding:"11px 13px"}}>
                     <div className="form-lbl">{l}</div>
-                    <div style={{fontSize:13,fontWeight:600,fontFamily:l==="No. Crédito"?"var(--mono)":"var(--font)"}}>{v}</div>
+                    <div style={{fontSize:13,fontWeight:600,fontFamily:l==="No. CrÃ©dito"?"var(--mono)":"var(--font)"}}>{v}</div>
                   </div>
                 ))}
               </div>
@@ -1526,12 +1526,12 @@ const FONACOT = ({ addToast }) => {
   );
 };
 
-// ── CONTRATOS ─────────────────────────────────────────────────────────────────
+// ââ CONTRATOS âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const initCONTRATOS = () => ({
   servicio: [
     { id:"cs1", cliente:"Ironcast S.A. de C.V.", rfc:"IRO8501154S6", objeto:"Servicios de mantenimiento industrial especializado", inicio:"2025-01-01", fin:"2026-12-31", monto:480000, moneda:"MXN", status:"vigente", firmado:true, file:"contrato_ironcast_2025.pdf" },
-    { id:"cs2", cliente:"Carrier de México",     rfc:"CAR920115P27", objeto:"Suministro de técnicos especializados en HVAC",       inicio:"2025-03-01", fin:"2026-03-01", monto:320000, moneda:"MXN", status:"vigente", firmado:true, file:"contrato_carrier_2025.pdf" },
-    { id:"cs3", cliente:"Ternium México S.A.",    rfc:"TER951020JK5", objeto:"Operación y mantenimiento de equipos de planta",      inicio:"2025-06-01", fin:"2026-06-01", monto:260000, moneda:"MXN", status:"vigente", firmado:true, file:"contrato_ternium_2025.pdf" },
+    { id:"cs2", cliente:"Carrier de MÃ©xico",     rfc:"CAR920115P27", objeto:"Suministro de tÃ©cnicos especializados en HVAC",       inicio:"2025-03-01", fin:"2026-03-01", monto:320000, moneda:"MXN", status:"vigente", firmado:true, file:"contrato_carrier_2025.pdf" },
+    { id:"cs3", cliente:"Ternium MÃ©xico S.A.",    rfc:"TER951020JK5", objeto:"OperaciÃ³n y mantenimiento de equipos de planta",      inicio:"2025-06-01", fin:"2026-06-01", monto:260000, moneda:"MXN", status:"vigente", firmado:true, file:"contrato_ternium_2025.pdf" },
     { id:"cs4", cliente:"AHMSA",                 rfc:"AHM570101AB2", objeto:"Servicios especializados de soldadura industrial",     inicio:"2024-01-01", fin:"2025-01-01", monto:150000, moneda:"MXN", status:"vencido",  firmado:true, file:"contrato_ahmsa_2024.pdf" },
   ],
   laboral: TRABAJADORES.map((t,i)=>({
@@ -1541,60 +1541,60 @@ const initCONTRATOS = () => ({
     fin: i===2||i===4?null:`2026-0${i+1<12?i+1:12}-01`,
     status: "vigente", firmado:true,
     file:`contrato_${t.nombre.split(" ")[0].toLowerCase()}.pdf`,
-    clausulas:["Jornada 8hrs diarias","Salario según tabulador","Prestaciones de ley","Confidencialidad de información"],
+    clausulas:["Jornada 8hrs diarias","Salario segÃºn tabulador","Prestaciones de ley","Confidencialidad de informaciÃ³n"],
   })),
 });
 
 
-/* ── 34 WORKERS (nómina completa MICSA) ───────────────────────────────────── */
+/* ââ 34 WORKERS (nÃ³mina completa MICSA) âââââââââââââââââââââââââââââââââââââ */
 const WORKERS_34 = [
   { nss:"83068104765", nombre:"Alvarez Garcia Paloma Nayeli" },
-  { nss:"32917398854", nombre:"Bustos Ramos Víctor Manuel" },
-  { nss:"03149807996", nombre:"Contreras González Jordan Neftalí" },
+  { nss:"32917398854", nombre:"Bustos Ramos VÃ­ctor Manuel" },
+  { nss:"03149807996", nombre:"Contreras GonzÃ¡lez Jordan NeftalÃ­" },
   { nss:"12048780154", nombre:"Cruz Lugo Luis Fernando" },
   { nss:"19149711947", nombre:"De Alba Elizondo Hugo Edwin",        curp:"AAEH970918HCLLLG00", rfc:"AAEH970918DZ0", numEmp:"03", fechaInicio:"2024-09-29" },
   { nss:"32927426927", nombre:"De Alba Reyna Jorge Alberto" },
   { nss:"32907334729", nombre:"De Alba Romero Hugo Arnoldo" },
-  { nss:"41038707794", nombre:"Estrada Segura Juan Jesús" },
-  { nss:"42169612548", nombre:"Fabela Rivera César Ricardo" },
-  { nss:"32068822249", nombre:"Flores González Rodolfo" },
+  { nss:"41038707794", nombre:"Estrada Segura Juan JesÃºs" },
+  { nss:"42169612548", nombre:"Fabela Rivera CÃ©sar Ricardo" },
+  { nss:"32068822249", nombre:"Flores GonzÃ¡lez Rodolfo" },
   { nss:"11160675507", nombre:"Gaona Santiago Sotero" },
-  { nss:"02168185920", nombre:"García González Manuel Esteban" },
+  { nss:"02168185920", nombre:"GarcÃ­a GonzÃ¡lez Manuel Esteban" },
   { nss:"32079063783", nombre:"Garza Morales Mario Alberto" },
-  { nss:"32917432497", nombre:"González Rivera Joel Roberto" },
-  { nss:"41169702127", nombre:"Guzmán Alvarado Sergio" },
-  { nss:"32988218130", nombre:"Juárez Gutiérrez Raúl",             curp:"JUGR820420HNERTL09", rfc:"JUGR820420EX2", numEmp:"05", fechaInicio:"2024-09-29" },
-  { nss:"32058633259", nombre:"Lucido López Luis Silverio" },
+  { nss:"32917432497", nombre:"GonzÃ¡lez Rivera Joel Roberto" },
+  { nss:"41169702127", nombre:"GuzmÃ¡n Alvarado Sergio" },
+  { nss:"32988218130", nombre:"JuÃ¡rez GutiÃ©rrez RaÃºl",             curp:"JUGR820420HNERTL09", rfc:"JUGR820420EX2", numEmp:"05", fechaInicio:"2024-09-29" },
+  { nss:"32058633259", nombre:"Lucido LÃ³pez Luis Silverio" },
   { nss:"32937535584", nombre:"Meraz Reyes Ricardo Rodolfo" },
-  { nss:"18149859722", nombre:"Moreno de León Emmanuel Alejandro" },
+  { nss:"18149859722", nombre:"Moreno de LeÃ³n Emmanuel Alejandro" },
   { nss:"32008307079", nombre:"Ortega Moreno Diego Gerardo" },
-  { nss:"12139743673", nombre:"Pérez Martínez José Francisco" },
-  { nss:"25159803631", nombre:"Rivas García José Armando" },
-  { nss:"32139204211", nombre:"Rivas García Reynaldo" },
-  { nss:"32109285018", nombre:"Rodríguez Guerrero Israel" },
-  { nss:"42169831056", nombre:"Rodríguez Juárez Ángel Alejandro" },
-  { nss:"60078906512", nombre:"Rodríguez Juárez Rolando" },
+  { nss:"12139743673", nombre:"PÃ©rez MartÃ­nez JosÃ© Francisco" },
+  { nss:"25159803631", nombre:"Rivas GarcÃ­a JosÃ© Armando" },
+  { nss:"32139204211", nombre:"Rivas GarcÃ­a Reynaldo" },
+  { nss:"32109285018", nombre:"RodrÃ­guez Guerrero Israel" },
+  { nss:"42169831056", nombre:"RodrÃ­guez JuÃ¡rez Ãngel Alejandro" },
+  { nss:"60078906512", nombre:"RodrÃ­guez JuÃ¡rez Rolando" },
   { nss:"32109006026", nombre:"Romo de los Santos Arturo Guadalupe", curp:"ROSA901124HCLMNR00", rfc:"ROSA901124NA6", numEmp:"16", fechaInicio:"2025-05-12" },
-  { nss:"32987400804", nombre:"Santibáñez Domínguez Sergio" },
-  { nss:"32877032733", nombre:"Sariñana Rodríguez Juan Bernardino" },
-  { nss:"60998112225", nombre:"Savala González Edgar Pascual" },
+  { nss:"32987400804", nombre:"SantibÃ¡Ã±ez DomÃ­nguez Sergio" },
+  { nss:"32877032733", nombre:"SariÃ±ana RodrÃ­guez Juan Bernardino" },
+  { nss:"60998112225", nombre:"Savala GonzÃ¡lez Edgar Pascual" },
   { nss:"32079137686", nombre:"Sifuentes Fraire Roberto Ulises" },
   { nss:"32128603787", nombre:"Silva Meraz Franciss Magdiel" },
-  { nss:"08149811351", nombre:"Valenciano Vélez Kevin Daniel" },
-  { nss:"09897142999", nombre:"Vázquez Gaytán Eduardo" },
+  { nss:"08149811351", nombre:"Valenciano VÃ©lez Kevin Daniel" },
+  { nss:"09897142999", nombre:"VÃ¡zquez GaytÃ¡n Eduardo" },
 ];
 
 const PATRON_DATA = {
   razonSocial:   "Montajes e Izajes del Centro Industrial Contractor S.A. de C.V.",
   rfc:           "MIC2301268S5",
-  regimen:       "Sociedad Anónima de Capital Variable",
-  regimenFiscal: "601 - Régimen General de Ley Personas Morales",
+  regimen:       "Sociedad AnÃ³nima de Capital Variable",
+  regimenFiscal: "601 - RÃ©gimen General de Ley Personas Morales",
   domicilio:     "Guerrero Sur No. 108, Col. Monclova Centro",
   ciudad:        "Monclova",
   estado:        "Coahuila de Zaragoza",
   cp:            "25700",
   regPatronal:   "A2735956108",
-  repLegal:      "Jordan Neftalí Contreras González",
+  repLegal:      "Jordan NeftalÃ­ Contreras GonzÃ¡lez",
   cargo:         "Representante Legal",
   sbcDiario:     315.04,
   sdi:           330.57,
@@ -1605,15 +1605,15 @@ const PATRON_DATA = {
   entidad:       "COA - Coahuila",
 };
 
-const PUESTOS_GEN = ["Operador Industrial","Técnico Especialista","Soldador","Mecánico","Electricista","Supervisor de Campo","Ayudante General","Rigger / Aparejador","Operador de Grúa","Inspector de Calidad","Otro"];
-const JORNADAS_GEN = ["48 horas semanales","44 horas semanales (Mixta)","40 horas semanales","Según turno asignado"];
-const DEPTOS_GEN = ["Operaciones","Mantenimiento","Ingeniería","Supervisión","Administración","Proyectos Especiales"];
+const PUESTOS_GEN = ["Operador Industrial","TÃ©cnico Especialista","Soldador","MecÃ¡nico","Electricista","Supervisor de Campo","Ayudante General","Rigger / Aparejador","Operador de GrÃºa","Inspector de Calidad","Otro"];
+const JORNADAS_GEN = ["48 horas semanales","44 horas semanales (Mixta)","40 horas semanales","SegÃºn turno asignado"];
+const DEPTOS_GEN = ["Operaciones","Mantenimiento","IngenierÃ­a","SupervisiÃ³n","AdministraciÃ³n","Proyectos Especiales"];
 const MESES_GEN = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 
-const fmtPeso = v => v ? `$${Number(v).toLocaleString('es-MX',{minimumFractionDigits:2})}` : '—';
+const fmtPeso = v => v ? `$${Number(v).toLocaleString('es-MX',{minimumFractionDigits:2})}` : 'â';
 const hoyGenStr = () => { const d=new Date(); return `${String(d.getDate()).padStart(2,'0')} de ${MESES_GEN[d.getMonth()]} de ${d.getFullYear()}`; };
 
-/* ── CONTRATO VISUAL COMPONENT ─────────────────────────────────────────────── */
+/* ââ CONTRATO VISUAL COMPONENT âââââââââââââââââââââââââââââââââââââââââââââââ */
 const ContratoDoc = ({ e }) => {
   const P = PATRON_DATA;
   const pnd = v => v ? v : <span style={{color:'var(--red)',fontWeight:700}}>[PENDIENTE]</span>;
@@ -1622,27 +1622,27 @@ const ContratoDoc = ({ e }) => {
     <div id="contrato-doc" style={{background:'#FDFCFA',border:'1px solid var(--border)',borderRadius:8,padding:'32px 36px',fontFamily:"'Georgia',serif",fontSize:12,lineHeight:1.9,color:'#111',maxHeight:520,overflowY:'auto'}}>
       <div style={{textAlign:'center',fontSize:14,fontWeight:700,letterSpacing:'.8px',textTransform:'uppercase',marginBottom:3}}>CONTRATO INDIVIDUAL DE TRABAJO</div>
       <div style={{textAlign:'center',fontSize:13,fontWeight:700,letterSpacing:'.8px',textTransform:'uppercase',marginBottom:4}}>POR TIEMPO INDETERMINADO</div>
-      <div style={{textAlign:'center',fontSize:10,fontFamily:'monospace',color:'#666',marginBottom:10}}>{P.rfc} · Reg. Patronal: {P.regPatronal} · {P.ciudad}, {P.estado}</div>
+      <div style={{textAlign:'center',fontSize:10,fontFamily:'monospace',color:'#666',marginBottom:10}}>{P.rfc} Â· Reg. Patronal: {P.regPatronal} Â· {P.ciudad}, {P.estado}</div>
       <hr style={{border:'none',borderTop:'2px solid #111',margin:'6px 0 14px'}}/>
-      <p style={{textAlign:'justify',marginBottom:6}}>Contrato Individual de Trabajo por Tiempo Indeterminado que celebran, por una parte, <strong>{P.razonSocial}</strong>, representada por <strong>{P.repLegal}</strong>, {P.cargo}, a quien se denominará <strong>"EL PATRÓN"</strong>; y por la otra, <strong>{pnd(e.nombre)}</strong>, a quien se denominará <strong>"EL TRABAJADOR"</strong>:</p>
+      <p style={{textAlign:'justify',marginBottom:6}}>Contrato Individual de Trabajo por Tiempo Indeterminado que celebran, por una parte, <strong>{P.razonSocial}</strong>, representada por <strong>{P.repLegal}</strong>, {P.cargo}, a quien se denominarÃ¡ <strong>"EL PATRÃN"</strong>; y por la otra, <strong>{pnd(e.nombre)}</strong>, a quien se denominarÃ¡ <strong>"EL TRABAJADOR"</strong>:</p>
       <div style={{fontWeight:700,fontSize:13,textDecoration:'underline',margin:'14px 0 5px'}}>DECLARACIONES</div>
-      <p style={{textAlign:'justify',marginBottom:5}}><strong>EL PATRÓN:</strong> RFC {P.rfc}, Reg. Patronal IMSS {P.regPatronal}, domicilio en {P.domicilio}, {P.ciudad}, {P.estado}, C.P. {P.cp}. Inscrita en {P.regimenFiscal}. Constancia REPSE vigente.</p>
-      <p style={{textAlign:'justify',marginBottom:5}}><strong>EL TRABAJADOR:</strong> Nombre: <strong>{pnd(e.nombre)}</strong> | NSS: <strong>{pnd(e.nss)}</strong>{e.curp?<> | CURP: <strong>{e.curp}</strong></>:''}{e.rfc?<> | RFC: <strong>{e.rfc}</strong></>:''}. {e.domicilio?`Domicilio: ${e.domicilio}.`:''} Tiene capacidad legal y física para el puesto; información auténtica.</p>
-      <div style={{fontWeight:700,fontSize:13,textDecoration:'underline',margin:'14px 0 5px'}}>CLÁUSULAS</div>
+      <p style={{textAlign:'justify',marginBottom:5}}><strong>EL PATRÃN:</strong> RFC {P.rfc}, Reg. Patronal IMSS {P.regPatronal}, domicilio en {P.domicilio}, {P.ciudad}, {P.estado}, C.P. {P.cp}. Inscrita en {P.regimenFiscal}. Constancia REPSE vigente.</p>
+      <p style={{textAlign:'justify',marginBottom:5}}><strong>EL TRABAJADOR:</strong> Nombre: <strong>{pnd(e.nombre)}</strong> | NSS: <strong>{pnd(e.nss)}</strong>{e.curp?<> | CURP: <strong>{e.curp}</strong></>:''}{e.rfc?<> | RFC: <strong>{e.rfc}</strong></>:''}. {e.domicilio?`Domicilio: ${e.domicilio}.`:''} Tiene capacidad legal y fÃ­sica para el puesto; informaciÃ³n autÃ©ntica.</p>
+      <div style={{fontWeight:700,fontSize:13,textDecoration:'underline',margin:'14px 0 5px'}}>CLÃUSULAS</div>
       {[
-        ['PRIMERA. NATURALEZA',`Contrato por Tiempo Indeterminado (${P.tipoContrato}). Nómina tipo ${P.tipoNomina}. La relación laboral inicia en la fecha de firma.`],
-        ['SEGUNDA. PERÍODO DE PRUEBA','Hasta 30 días naturales conforme al Art. 39-A LFT.'],
-        ['TERCERA. PUESTO Y DEPARTAMENTO', e.puesto ? `El trabajador es contratado como ${e.puesto}, adscrito al departamento de ${e.departamento||'[PENDIENTE]'}. Riesgo: ${P.riesgo}. Régimen: ${P.tipoRegimen}.${e.funciones?' '+e.funciones:''}` : '[PENDIENTE]'],
+        ['PRIMERA. NATURALEZA',`Contrato por Tiempo Indeterminado (${P.tipoContrato}). NÃ³mina tipo ${P.tipoNomina}. La relaciÃ³n laboral inicia en la fecha de firma.`],
+        ['SEGUNDA. PERÃODO DE PRUEBA','Hasta 30 dÃ­as naturales conforme al Art. 39-A LFT.'],
+        ['TERCERA. PUESTO Y DEPARTAMENTO', e.puesto ? `El trabajador es contratado como ${e.puesto}, adscrito al departamento de ${e.departamento||'[PENDIENTE]'}. Riesgo: ${P.riesgo}. RÃ©gimen: ${P.tipoRegimen}.${e.funciones?' '+e.funciones:''}` : '[PENDIENTE]'],
         ['CUARTA. LUGAR DE TRABAJO', `${e.lugarTrabajo||P.ciudad+', '+P.estado}, Entidad: ${P.entidad}, o en instalaciones de clientes REPSE.`],
-        ['QUINTA. JORNADA', e.jornada ? `${e.jornada}. Lugar expedición CFDI: 25700.` : '[PENDIENTE]'],
-        ['SEXTA. SALARIO', `Salario Base de Cotización: ${fmtPeso(P.sbcDiario)}/día (mínimo IMSS zona norte 2025). SDI: ${fmtPeso(P.sdi)} (factor 1.049295). Equivalencia mensual: ${fmtPeso(P.sbcDiario*30)}. Periodicidad: Semanal vía Zentric. Sindicalizado: Sí.`],
-        ['SÉPTIMA. PRESTACIONES','Vacaciones, prima vacacional 25%, aguinaldo 15 días, IMSS (Reg.Pat. '+P.regPatronal+'), INFONAVIT, FONACOT conforme a LFT.'],
-        ['OCTAVA. HERRAMIENTAS','Bajo inventario firmado; correcta conservación y devolución.'],
-        ['NOVENA. CONFIDENCIALIDAD','Vigente durante la relación y 5 años posteriores.'],
-        ['DÉCIMA. PROPIEDAD INTELECTUAL',`Todo desarrollo con recursos de ${P.razonSocial} es propiedad exclusiva del patrón.`],
-        ['DÉCIMA PRIMERA. NO COMPETENCIA','Prohibición en Coahuila por 1 año posterior a terminación sin autorización escrita.'],
-        ['DÉCIMA SEGUNDA. RESCISIÓN','Art. 47 LFT y cualquier incumplimiento de este contrato.'],
-        ['DÉCIMA TERCERA. JURISDICCIÓN','Tribunales Laborales de Coahuila de Zaragoza.'],
+        ['QUINTA. JORNADA', e.jornada ? `${e.jornada}. Lugar expediciÃ³n CFDI: 25700.` : '[PENDIENTE]'],
+        ['SEXTA. SALARIO', `Salario Base de CotizaciÃ³n: ${fmtPeso(P.sbcDiario)}/dÃ­a (mÃ­nimo IMSS zona norte 2025). SDI: ${fmtPeso(P.sdi)} (factor 1.049295). Equivalencia mensual: ${fmtPeso(P.sbcDiario*30)}. Periodicidad: Semanal vÃ­a Zentric. Sindicalizado: SÃ­.`],
+        ['SÃPTIMA. PRESTACIONES','Vacaciones, prima vacacional 25%, aguinaldo 15 dÃ­as, IMSS (Reg.Pat. '+P.regPatronal+'), INFONAVIT, FONACOT conforme a LFT.'],
+        ['OCTAVA. HERRAMIENTAS','Bajo inventario firmado; correcta conservaciÃ³n y devoluciÃ³n.'],
+        ['NOVENA. CONFIDENCIALIDAD','Vigente durante la relaciÃ³n y 5 aÃ±os posteriores.'],
+        ['DÃCIMA. PROPIEDAD INTELECTUAL',`Todo desarrollo con recursos de ${P.razonSocial} es propiedad exclusiva del patrÃ³n.`],
+        ['DÃCIMA PRIMERA. NO COMPETENCIA','ProhibiciÃ³n en Coahuila por 1 aÃ±o posterior a terminaciÃ³n sin autorizaciÃ³n escrita.'],
+        ['DÃCIMA SEGUNDA. RESCISIÃN','Art. 47 LFT y cualquier incumplimiento de este contrato.'],
+        ['DÃCIMA TERCERA. JURISDICCIÃN','Tribunales Laborales de Coahuila de Zaragoza.'],
       ].map(([t,c],i)=>(
         <div key={i} style={{marginBottom:5}}>
           <span style={{fontWeight:700,textDecoration:'underline'}}>{t}. </span>
@@ -1655,14 +1655,14 @@ const ContratoDoc = ({ e }) => {
           <img src={FIRMA_PATRON} alt="Firma" style={{height:60,objectFit:'contain',display:'block',margin:'0 auto 5px'}}/>
           <div style={{borderTop:'1.5px solid #444',paddingTop:5}}>
             <div style={{fontWeight:700,fontSize:11,fontFamily:'sans-serif'}}>{P.repLegal}</div>
-            <div style={{fontSize:10,color:'#555',fontFamily:'sans-serif'}}>{P.cargo} · RFC: {P.rfc}</div>
+            <div style={{fontSize:10,color:'#555',fontFamily:'sans-serif'}}>{P.cargo} Â· RFC: {P.rfc}</div>
           </div>
         </div>
         <div style={{flex:1,textAlign:'center'}}>
           <div style={{height:60,borderBottom:'1.5px solid #444',marginBottom:5}}/>
           <div style={{borderTop:'1.5px solid #444',paddingTop:5}}>
             <div style={{fontWeight:700,fontSize:11,fontFamily:'sans-serif'}}>{e.nombre||'EL TRABAJADOR'}</div>
-            <div style={{fontSize:10,color:'#555',fontFamily:'sans-serif'}}>{e.puesto||'Puesto'} · NSS: {e.nss||'—'}{e.curp?' · CURP: '+e.curp:''}</div>
+            <div style={{fontSize:10,color:'#555',fontFamily:'sans-serif'}}>{e.puesto||'Puesto'} Â· NSS: {e.nss||'â'}{e.curp?' Â· CURP: '+e.curp:''}</div>
           </div>
         </div>
       </div>
@@ -1678,7 +1678,7 @@ const ContratoDoc = ({ e }) => {
   );
 };
 
-/* ── GENERADOR INLINE para tab "generador" en CONTRATOS ───────────────────── */
+/* ââ GENERADOR INLINE para tab "generador" en CONTRATOS âââââââââââââââââââââ */
 const GeneradorContrato = ({ addToast }) => {
   const [busq, setBusq] = useState('');
   const [selIdx, setSelIdx] = useState(null);
@@ -1736,7 +1736,7 @@ const GeneradorContrato = ({ addToast }) => {
   );
   const S2 = ({opts,...p}) => (
     <select style={{width:'100%',padding:'7px 10px',background:'var(--surface)',border:'1.5px solid var(--border)',borderRadius:6,fontSize:12,fontFamily:'var(--font)',color:'var(--txt)',outline:'none'}} {...p}>
-      <option value="">— Seleccionar —</option>
+      <option value="">â Seleccionar â</option>
       {opts.map(o=><option key={o} value={o}>{o}</option>)}
     </select>
   );
@@ -1757,7 +1757,7 @@ const GeneradorContrato = ({ addToast }) => {
           <span style={{color:'var(--green)',fontSize:9}}>SBC ${PATRON_DATA.sbcDiario}</span>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:6,padding:'7px 10px',borderBottom:'1px solid var(--border)'}}>
-          <span style={{color:'var(--txt4)',fontSize:12}}>⌕</span>
+          <span style={{color:'var(--txt4)',fontSize:12}}>â</span>
           <input style={{flex:1,border:'none',outline:'none',fontSize:11,fontFamily:'var(--font)',color:'var(--txt)',background:'transparent'}}
             placeholder="Nombre o NSS..." value={busq} onChange={ev=>setBusq(ev.target.value)}/>
         </div>
@@ -1770,7 +1770,7 @@ const GeneradorContrato = ({ addToast }) => {
               <div key={w.nss} onClick={()=>selWorker(w,oi)}
                 style={{display:'flex',alignItems:'center',gap:7,padding:'7px 10px',cursor:'pointer',borderBottom:'1px solid var(--border)',background:isSel?'var(--blue-lt)':'transparent',borderLeft:isSel?'3px solid var(--blue)':'3px solid transparent',transition:'background .1s'}}>
                 <div style={{width:24,height:24,borderRadius:'50%',background:isSel?'var(--blue)':isDone?'var(--green)':'var(--surface2)',border:`1.5px solid ${isSel?'var(--blue)':isDone?'var(--green)':'var(--border)'}`,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:8,color:isSel||isDone?'#fff':'var(--txt2)',flexShrink:0}}>
-                  {isDone?'✓':w.nombre.charAt(0)}
+                  {isDone?'â':w.nombre.charAt(0)}
                 </div>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:10,fontWeight:500,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{w.nombre}</div>
@@ -1786,7 +1786,7 @@ const GeneradorContrato = ({ addToast }) => {
       <div>
         {/* SUBTABS */}
         <div style={{display:'flex',borderBottom:'2px solid var(--border)',marginBottom:12}}>
-          {[['form','✏ Formulario'],['preview','📄 Contrato'],['batch','⚡ Batch 34']].map(([id,lbl])=>(
+          {[['form','â Formulario'],['preview','ð Contrato'],['batch','â¡ Batch 34']].map(([id,lbl])=>(
             <div key={id} onClick={()=>setSubtab(id)}
               style={{padding:'7px 14px',fontSize:10,fontWeight:700,textTransform:'uppercase',letterSpacing:'.5px',color:subtab===id?'var(--red)':'var(--txt3)',cursor:'pointer',borderBottom:subtab===id?'2px solid var(--red)':'2px solid transparent',marginBottom:-2,fontFamily:'var(--mono)',transition:'all .15s'}}>
               {lbl}
@@ -1796,24 +1796,24 @@ const GeneradorContrato = ({ addToast }) => {
 
         {subtab==='form'&&(
           <>
-            {/* PATRÓN BLOQUEADO */}
+            {/* PATRÃN BLOQUEADO */}
             <div className="card mb16">
               <div className="card-hdr">
-                <div><div className="card-title">EL PATRÓN — Datos Fiscales</div><div className="card-sub">CSF SAT 07/ENE/2026 · XML CFDI nóminas · RFC MIC2301268S5</div></div>
-                <span className="badge" style={{background:'#FFF8E0',color:'#8C6500',border:'1px solid #CCA030',fontSize:10}}>🔒 Bloqueado</span>
+                <div><div className="card-title">EL PATRÃN â Datos Fiscales</div><div className="card-sub">CSF SAT 07/ENE/2026 Â· XML CFDI nÃ³minas Â· RFC MIC2301268S5</div></div>
+                <span className="badge" style={{background:'#FFF8E0',color:'#8C6500',border:'1px solid #CCA030',fontSize:10}}>ð Bloqueado</span>
               </div>
               <div className="card-body">
                 <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr',gap:10,marginBottom:10}}>
-                  <FL lbl="Razón Social"><I2 value={PATRON_DATA.razonSocial} lck readOnly/></FL>
+                  <FL lbl="RazÃ³n Social"><I2 value={PATRON_DATA.razonSocial} lck readOnly/></FL>
                   <FL lbl="RFC"><I2 value={PATRON_DATA.rfc} lck readOnly/></FL>
                   <FL lbl="Reg. Patronal IMSS"><I2 value={PATRON_DATA.regPatronal} lck readOnly/></FL>
                   <FL lbl="C.P."><I2 value={PATRON_DATA.cp} lck readOnly/></FL>
                 </div>
                 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10}}>
-                  <FL lbl="SBC Diario" note="Mínimo zona norte 2025"><I2 value={fmtPeso(PATRON_DATA.sbcDiario)} lck readOnly/></FL>
-                  <FL lbl="SDI / día"><I2 value={fmtPeso(PATRON_DATA.sdi)} lck readOnly/></FL>
+                  <FL lbl="SBC Diario" note="MÃ­nimo zona norte 2025"><I2 value={fmtPeso(PATRON_DATA.sbcDiario)} lck readOnly/></FL>
+                  <FL lbl="SDI / dÃ­a"><I2 value={fmtPeso(PATRON_DATA.sdi)} lck readOnly/></FL>
                   <FL lbl="Salario Mensual (x30)"><I2 value={fmtPeso(PATRON_DATA.sbcDiario*30)} lck readOnly/></FL>
-                  <FL lbl="Periodicidad"><I2 value="Semanal · 02" lck readOnly/></FL>
+                  <FL lbl="Periodicidad"><I2 value="Semanal Â· 02" lck readOnly/></FL>
                 </div>
               </div>
             </div>
@@ -1823,13 +1823,13 @@ const GeneradorContrato = ({ addToast }) => {
               <div className="card-hdr">
                 <div><div className="card-title">EL TRABAJADOR</div><div className="card-sub">Selecciona del panel o captura manualmente</div></div>
                 {selIdx!==null
-                  ? <span className="badge bg">✓ {WORKERS_34[selIdx]?.nombre.split(' ').slice(-2).join(' ')}</span>
+                  ? <span className="badge bg">â {WORKERS_34[selIdx]?.nombre.split(' ').slice(-2).join(' ')}</span>
                   : <span className="badge bb">34 registros disponibles</span>}
               </div>
               <div className="card-body">
                 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
                   <FL lbl="Nombre Completo" req><I2 value={e.nombre} onChange={ev=>se({nombre:ev.target.value})} placeholder="Apellidos Nombre(s)..." xml={!!e.nombre&&selIdx!==null}/></FL>
-                  <FL lbl="NSS" req><I2 value={e.nss} onChange={ev=>se({nss:ev.target.value})} placeholder="11 dígitos" xml={!!e.nss&&selIdx!==null}/></FL>
+                  <FL lbl="NSS" req><I2 value={e.nss} onChange={ev=>se({nss:ev.target.value})} placeholder="11 dÃ­gitos" xml={!!e.nss&&selIdx!==null}/></FL>
                 </div>
                 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10,marginBottom:10}}>
                   <FL lbl="CURP" note="Del CFDI"><I2 value={e.curp} onChange={ev=>se({curp:ev.target.value})} xml={!!e.curp}/></FL>
@@ -1848,8 +1848,8 @@ const GeneradorContrato = ({ addToast }) => {
                   <FL lbl="Jornada Semanal" req><S2 opts={JORNADAS_GEN} value={e.jornada} onChange={ev=>se({jornada:ev.target.value})}/></FL>
                 </div>
                 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-                  <FL lbl="Riesgo de Puesto" note="Clase V — del PDF nómina"><I2 value="5 - Clase V" lck readOnly/></FL>
-                  <FL lbl="Descripción de Funciones (opcional)"><I2 value={e.funciones} onChange={ev=>se({funciones:ev.target.value})} placeholder="Actividades principales..."/></FL>
+                  <FL lbl="Riesgo de Puesto" note="Clase V â del PDF nÃ³mina"><I2 value="5 - Clase V" lck readOnly/></FL>
+                  <FL lbl="DescripciÃ³n de Funciones (opcional)"><I2 value={e.funciones} onChange={ev=>se({funciones:ev.target.value})} placeholder="Actividades principales..."/></FL>
                 </div>
               </div>
               <div style={{display:'flex',alignItems:'center',gap:10,padding:'12px 16px',background:'var(--surface2)',borderTop:'1px solid var(--border)'}}>
@@ -1858,7 +1858,7 @@ const GeneradorContrato = ({ addToast }) => {
                   {camposOk?'Listo para generar':`Faltan: ${[!e.nombre&&'Nombre',!e.nss&&'NSS',!e.departamento&&'Dpto',!e.puesto&&'Puesto',!e.jornada&&'Jornada'].filter(Boolean).join(', ')}`}
                 </div>
                 <button className="btn btn-p btn-sm" disabled={!camposOk} onClick={()=>setSubtab('preview')}>
-                  ⚡ Ver Contrato
+                  â¡ Ver Contrato
                 </button>
               </div>
             </div>
@@ -1868,15 +1868,15 @@ const GeneradorContrato = ({ addToast }) => {
         {subtab==='preview'&&(
           <div className="card">
             <div className="card-hdr">
-              <div><div className="card-title">Contrato — {e.nombre||'Sin nombre'}</div><div className="card-sub">{hoyGenStr()} · SBC ${PATRON_DATA.sbcDiario}/día · SDI ${PATRON_DATA.sdi}</div></div>
+              <div><div className="card-title">Contrato â {e.nombre||'Sin nombre'}</div><div className="card-sub">{hoyGenStr()} Â· SBC ${PATRON_DATA.sbcDiario}/dÃ­a Â· SDI ${PATRON_DATA.sdi}</div></div>
             </div>
             <div style={{padding:14}}>
               <ContratoDoc e={e}/>
             </div>
             <div style={{display:'flex',gap:8,padding:'11px 14px',background:'var(--surface2)',borderTop:'1px solid var(--border)'}}>
-              <button className="btn btn-o btn-sm" onClick={()=>setSubtab('form')}>← Editar</button>
-              <button className="btn btn-o btn-sm" onClick={descargar}>⬇ Descargar .txt</button>
-              <button className="btn btn-p btn-sm" onClick={()=>window.print()}>🖨 Imprimir</button>
+              <button className="btn btn-o btn-sm" onClick={()=>setSubtab('form')}>â Editar</button>
+              <button className="btn btn-o btn-sm" onClick={descargar}>â¬ Descargar .txt</button>
+              <button className="btn btn-p btn-sm" onClick={()=>window.print()}>ð¨ Imprimir</button>
             </div>
           </div>
         )}
@@ -1884,28 +1884,28 @@ const GeneradorContrato = ({ addToast }) => {
         {subtab==='batch'&&(
           <div className="card">
             <div className="card-hdr">
-              <div><div className="card-title">Generación Batch — 34 Contratos</div><div className="card-sub">SBC ${PATRON_DATA.sbcDiario}/día · SDI ${PATRON_DATA.sdi} · Mínimo IMSS zona norte 2025</div></div>
+              <div><div className="card-title">GeneraciÃ³n Batch â 34 Contratos</div><div className="card-sub">SBC ${PATRON_DATA.sbcDiario}/dÃ­a Â· SDI ${PATRON_DATA.sdi} Â· MÃ­nimo IMSS zona norte 2025</div></div>
               <span className="badge" style={{background:batchDone.length===34?'var(--green-lt)':'var(--amber-lt)',color:batchDone.length===34?'var(--green)':'var(--amber)',border:`1px solid ${batchDone.length===34?'var(--green-md)':'var(--amber-md)'}`,fontFamily:'var(--mono)',fontSize:10}}>{batchDone.length}/{WORKERS_34.length}</span>
             </div>
             <div className="card-body">
               <div style={{height:6,background:'var(--border)',borderRadius:3,overflow:'hidden',marginBottom:8}}>
                 <div style={{height:'100%',background:'var(--green)',borderRadius:3,width:`${batchDone.length/WORKERS_34.length*100}%`,transition:'width .3s'}}/>
               </div>
-              <div style={{fontSize:11,color:'var(--txt3)',fontFamily:'var(--mono)',marginBottom:14}}>{batchDone.length} de {WORKERS_34.length} · SBC ${PATRON_DATA.sbcDiario}/día para todos · Periodicidad semanal</div>
+              <div style={{fontSize:11,color:'var(--txt3)',fontFamily:'var(--mono)',marginBottom:14}}>{batchDone.length} de {WORKERS_34.length} Â· SBC ${PATRON_DATA.sbcDiario}/dÃ­a para todos Â· Periodicidad semanal</div>
               <button className="btn btn-p btn-sm mb16" disabled={batchRun} onClick={runBatch}>
-                {batchRun?'⏳ Procesando...':'⚡ Generar 34 contratos'}
+                {batchRun?'â³ Procesando...':'â¡ Generar 34 contratos'}
               </button>
               <div style={{display:'flex',flexDirection:'column',gap:6,maxHeight:320,overflowY:'auto'}}>
                 {WORKERS_34.map(w=>(
                   <div key={w.nss} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 13px',background:batchDone.includes(w.nss)?'var(--green-lt)':'var(--surface)',border:`1px solid ${batchDone.includes(w.nss)?'var(--green-md)':'var(--border)'}`,borderRadius:7}}>
                     <div style={{width:26,height:26,borderRadius:'50%',background:batchDone.includes(w.nss)?'var(--green)':'var(--surface2)',color:batchDone.includes(w.nss)?'#fff':'var(--txt2)',border:`1.5px solid ${batchDone.includes(w.nss)?'var(--green)':'var(--border)'}`,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:9,flexShrink:0}}>
-                      {batchDone.includes(w.nss)?'✓':w.nombre.charAt(0)}
+                      {batchDone.includes(w.nss)?'â':w.nombre.charAt(0)}
                     </div>
                     <div style={{flex:1}}>
                       <div style={{fontSize:12,fontWeight:500}}>{w.nombre}</div>
                       <div style={{fontSize:9,color:'var(--txt4)',fontFamily:'var(--mono)'}}>{w.nss}{w.curp&&<span style={{marginLeft:6,fontSize:8,padding:'1px 4px',background:'var(--green-lt)',color:'var(--green)',border:'1px solid var(--green-md)',borderRadius:3,fontWeight:700}}>CFDI</span>}</div>
                     </div>
-                    {batchDone.includes(w.nss)&&<span className="badge bg" style={{fontSize:10}}>✓ Generado</span>}
+                    {batchDone.includes(w.nss)&&<span className="badge bg" style={{fontSize:10}}>â Generado</span>}
                   </div>
                 ))}
               </div>
@@ -1945,9 +1945,9 @@ const CONTRATOS = ({ addToast }) => {
     <div>
       <div className="g3 mb16">
         {[
-          {lbl:"Contratos de Servicio", val:data.servicio.filter(c=>c.status==="vigente").length, col:"blue",  ic:I.building, sub:`$${totalServicio.toLocaleString()} MXN/año`},
+          {lbl:"Contratos de Servicio", val:data.servicio.filter(c=>c.status==="vigente").length, col:"blue",  ic:I.building, sub:`$${totalServicio.toLocaleString()} MXN/aÃ±o`},
           {lbl:"Contratos Laborales",   val:data.laboral.length,                                   col:"green", ic:I.star,     sub:`${data.laboral.filter(c=>c.tipo==="indefinido").length} indefinidos`},
-          {lbl:"Vencen en 60 días",     val:data.servicio.filter(c=>{const d=diasParaVencer(c.fin);return d!==null&&d>=0&&d<60}).length+data.laboral.filter(c=>{const d=diasParaVencer(c.fin);return d!==null&&d>=0&&d<60}).length,col:"amber",ic:I.clock,sub:"requieren renovación"},
+          {lbl:"Vencen en 60 dÃ­as",     val:data.servicio.filter(c=>{const d=diasParaVencer(c.fin);return d!==null&&d>=0&&d<60}).length+data.laboral.filter(c=>{const d=diasParaVencer(c.fin);return d!==null&&d>=0&&d<60}).length,col:"amber",ic:I.clock,sub:"requieren renovaciÃ³n"},
         ].map((s,i)=>(
           <div key={i} className={`stat-card ${s.col}`}>
             <div className={`stat-ic ${s.col}`}><Ic d={s.ic} s={18}/></div>
@@ -1959,7 +1959,7 @@ const CONTRATOS = ({ addToast }) => {
       </div>
 
       <div className="flex g8 mb16">
-        {[["servicio","Contratos de Servicio",I.building],["laboral","Contratos Laborales",I.star],["generador","⚡ Generador",I.plus]].map(([id,lbl,ic])=>(
+        {[["servicio","Contratos de Servicio",I.building],["laboral","Contratos Laborales",I.star],["generador","â¡ Generador",I.plus]].map(([id,lbl,ic])=>(
           <button key={id} className={`ptab ${tab===id?"sel":""}`} onClick={()=>setTab(id)} style={{display:"flex",alignItems:"center",gap:7}}>
             <Ic d={ic} s={13}/>{lbl}
           </button>
@@ -1971,17 +1971,17 @@ const CONTRATOS = ({ addToast }) => {
           {data.servicio.some(c=>{const d=diasParaVencer(c.fin);return d!==null&&d>=0&&d<90;})&&(
             <div className="alert alert-amber mb16">
               <Ic d={I.alert} s={16}/>
-              <div><div className="alert-title">Contratos próximos a vencer</div>
-              <div className="alert-desc">{data.servicio.filter(c=>{const d=diasParaVencer(c.fin);return d!==null&&d>=0&&d<90;}).map(c=>c.cliente).join(", ")} — Gestionar renovación con anticipación</div></div>
+              <div><div className="alert-title">Contratos prÃ³ximos a vencer</div>
+              <div className="alert-desc">{data.servicio.filter(c=>{const d=diasParaVencer(c.fin);return d!==null&&d>=0&&d<90;}).map(c=>c.cliente).join(", ")} â Gestionar renovaciÃ³n con anticipaciÃ³n</div></div>
             </div>
           )}
           <div className="card mb16">
             <div className="card-hdr">
-              <div><div className="card-title">Contratos de Prestación de Servicios</div><div className="card-sub">Contratos con clientes donde MICSA funge como prestador especializado REPSE</div></div>
+              <div><div className="card-title">Contratos de PrestaciÃ³n de Servicios</div><div className="card-sub">Contratos con clientes donde MICSA funge como prestador especializado REPSE</div></div>
               <button className="btn btn-p btn-sm" onClick={()=>setModalNew(true)}><Ic d={I.plus} s={13}/>Nuevo Contrato</button>
             </div>
             <table className="table">
-              <thead><tr><th>CLIENTE</th><th>OBJETO</th><th>PERÍODO</th><th>MONTO</th><th>FIRMA</th><th>ESTADO</th><th></th></tr></thead>
+              <thead><tr><th>CLIENTE</th><th>OBJETO</th><th>PERÃODO</th><th>MONTO</th><th>FIRMA</th><th>ESTADO</th><th></th></tr></thead>
               <tbody>
                 {data.servicio.map(c=>{
                   const cc=CLIENTES_SISUB.find(x=>x.rfc===c.rfc);
@@ -2007,7 +2007,7 @@ const CONTRATOS = ({ addToast }) => {
           </div>
           <div style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:10,padding:"14px 18px",display:"flex",gap:16,alignItems:"center"}}>
             <Ic d={I.info} s={16} c="var(--blue)"/>
-            <div style={{fontSize:12,color:"var(--txt2)"}}>Los contratos de servicio deben adjuntarse al expediente REPSE mensual y al reporte cuatrimestral ICSOE como evidencia de la relación contractual con cada cliente contratante.</div>
+            <div style={{fontSize:12,color:"var(--txt2)"}}>Los contratos de servicio deben adjuntarse al expediente REPSE mensual y al reporte cuatrimestral ICSOE como evidencia de la relaciÃ³n contractual con cada cliente contratante.</div>
           </div>
         </div>
       )}
@@ -2030,10 +2030,10 @@ const CONTRATOS = ({ addToast }) => {
                     <div style={{width:42,height:42,borderRadius:"50%",background:"var(--green-lt)",border:"2px solid var(--green-md)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:15,color:"var(--green)",flexShrink:0}}>{c.trabajador.charAt(0)}</div>
                     <div style={{flex:1}}>
                       <div className="fw7">{c.trabajador}</div>
-                      <div className="t12 muted">{c.puesto} · <span className="mono">${c.salario.toLocaleString()}/mes</span> · Contrato {c.tipo}</div>
+                      <div className="t12 muted">{c.puesto} Â· <span className="mono">${c.salario.toLocaleString()}/mes</span> Â· Contrato {c.tipo}</div>
                     </div>
                     <div style={{textAlign:"right"}}>
-                      <div className="mono t11 muted">{c.inicio} →</div>
+                      <div className="mono t11 muted">{c.inicio} â</div>
                       <div className="mono t11 muted">{c.fin||"Indefinido"}</div>
                     </div>
                     {vigBadge(c)}
@@ -2054,7 +2054,7 @@ const CONTRATOS = ({ addToast }) => {
             <div className="modal-hdr">
               <div>
                 <div className="modal-title">{sel.type==="servicio"?sel.c.cliente:sel.c.trabajador}</div>
-                <div style={{fontSize:12,color:"var(--txt3)",marginTop:3}}>{sel.type==="servicio"?"Contrato de Prestación de Servicios":"Contrato Laboral Individual"}</div>
+                <div style={{fontSize:12,color:"var(--txt3)",marginTop:3}}>{sel.type==="servicio"?"Contrato de PrestaciÃ³n de Servicios":"Contrato Laboral Individual"}</div>
               </div>
               <button className="btn btn-o btn-sm" onClick={()=>setSel(null)}><Ic d={I.x} s={13}/></button>
             </div>
@@ -2086,10 +2086,10 @@ const CONTRATOS = ({ addToast }) => {
                     ))}
                   </div>
                   <div style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:8,padding:"12px 14px"}}>
-                    <div className="form-lbl" style={{marginBottom:8}}>CLÁUSULAS PRINCIPALES</div>
+                    <div className="form-lbl" style={{marginBottom:8}}>CLÃUSULAS PRINCIPALES</div>
                     {sel.c.clausulas.map((cl,i)=>(
                       <div key={i} style={{display:"flex",gap:8,alignItems:"flex-start",padding:"5px 0",borderBottom:i<sel.c.clausulas.length-1?"1px solid var(--border)":"none"}}>
-                        <span style={{color:"var(--green)",fontWeight:700,flexShrink:0}}>✓</span>
+                        <span style={{color:"var(--green)",fontWeight:700,flexShrink:0}}>â</span>
                         <span style={{fontSize:12}}>{cl}</span>
                       </div>
                     ))}
@@ -2108,7 +2108,7 @@ const CONTRATOS = ({ addToast }) => {
   );
 };
 
-// ── APP ───────────────────────────────────────────────────────────────────────
+// ââ APP âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let _tId=0;
 
 export default function App() {
@@ -2136,7 +2136,7 @@ export default function App() {
     {id:"dashboard",  label:"Panel General",       icon:I.chart,    badge:null,    grp:"Principal"},
     {id:"documentos", label:"Documentos",           icon:I.file,     badge:null,    grp:"Principal"},
     {id:"nube",       label:"Nube & Archivos",      icon:I.cloud,    badge:null,    grp:"Principal"},
-    {id:"clientes",   label:"Clientes & Envíos",    icon:I.building, badge:null,    grp:"Operaciones"},
+    {id:"clientes",   label:"Clientes & EnvÃ­os",    icon:I.building, badge:null,    grp:"Operaciones"},
     {id:"contratos",  label:"Contratos",            icon:I.folder,   badge:null,    grp:"Operaciones"},
     {id:"sisub",      label:"SISUB",                icon:I.star,     badge:null,    grp:"Operaciones"},
     {id:"fonacot",    label:"FONACOT",              icon:I.package,  badge:1,       grp:"Operaciones"},
@@ -2144,8 +2144,8 @@ export default function App() {
     {id:"alertas",    label:"Alertas",              icon:I.alert,    badge:pendCrit>0?pendCrit:null, grp:"IMSS"},
   ];
 
-  const TITLES={dashboard:"Panel General",documentos:"Gestión Documental",nube:"Nube & Archivos",clientes:"Clientes & Envíos",contratos:"Contratos",sisub:"SISUB — Subcontratación",fonacot:"FONACOT — Créditos de Nómina",icsoe:"ICSOE — Informativa Cuatrimestral",alertas:"Alertas & Vencimientos"};
-  const SUBS={dashboard:`Resumen ejecutivo de cumplimiento REPSE — ${MESES[now.getMonth()]} ${now.getFullYear()}`,documentos:"Carga, valida y aprueba documentos. Se guardan automáticamente en la nube.",nube:"Archivos almacenados en cloud — storage.micsa.com",clientes:"Gestiona clientes y envía expedientes completos por correo automático",contratos:"Contratos de servicio con clientes y contratos laborales de trabajadores",sisub:"Registro de subcontratistas y reporte mensual de trabajadores por cliente",fonacot:"Control de créditos activos y retenciones mensuales en nómina",icsoe:"Reporte cuatrimestral de contratos al IMSS via portal ICSOE · Art. 15-A LSS",alertas:"Documentos faltantes y vencimientos próximos"};
+  const TITLES={dashboard:"Panel General",documentos:"GestiÃ³n Documental",nube:"Nube & Archivos",clientes:"Clientes & EnvÃ­os",contratos:"Contratos",sisub:"SISUB â SubcontrataciÃ³n",fonacot:"FONACOT â CrÃ©ditos de NÃ³mina",icsoe:"ICSOE â Informativa Cuatrimestral",alertas:"Alertas & Vencimientos"};
+  const SUBS={dashboard:`Resumen ejecutivo de cumplimiento REPSE â ${MESES[now.getMonth()]} ${now.getFullYear()}`,documentos:"Carga, valida y aprueba documentos. Se guardan automÃ¡ticamente en la nube.",nube:"Archivos almacenados en cloud â storage.micsa.com",clientes:"Gestiona clientes y envÃ­a expedientes completos por correo automÃ¡tico",contratos:"Contratos de servicio con clientes y contratos laborales de trabajadores",sisub:"Registro de subcontratistas y reporte mensual de trabajadores por cliente",fonacot:"Control de crÃ©ditos activos y retenciones mensuales en nÃ³mina",icsoe:"Reporte cuatrimestral de contratos al IMSS via portal ICSOE Â· Art. 15-A LSS",alertas:"Documentos faltantes y vencimientos prÃ³ximos"};
 
   const grps=[...new Set(NAV.map(n=>n.grp))];
 
@@ -2157,7 +2157,7 @@ export default function App() {
           <div className="sb-brand">
             <div className="sb-logo">MIC<span>SA</span></div>
             <div className="sb-sub">Compliance Engine</div>
-            <div className="sb-pill">REPSE · IMSS · SAT · CLOUD</div>
+            <div className="sb-pill">REPSE Â· IMSS Â· SAT Â· CLOUD</div>
           </div>
           <nav className="nav">
             {grps.map(g=>(
@@ -2195,7 +2195,7 @@ export default function App() {
             </div>
             <div className="tb-right">
               <div className="cloud-pill"><div className="cloud-dot"/>Cloud Activo</div>
-              <span className={`badge ${pBadge(v)}`}><Semaforo v={v}/>{MESES[now.getMonth()]} — {v}%</span>
+              <span className={`badge ${pBadge(v)}`}><Semaforo v={v}/>{MESES[now.getMonth()]} â {v}%</span>
             </div>
           </div>
 
