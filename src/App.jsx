@@ -1,4 +1,5 @@
-﻿import { useState, useRef } from "react";
+﻿import { useState, useRef, useEffect } from "react";
+import { jsPDF } from "jspdf";
 
 const SUPABASE_URL = "https://gdauwwjuvzuopzqkxnpw.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkYXV3d2p1dnp1b3B6cWt4bnB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyNzYzODQsImV4cCI6MjA4Mzg1MjM4NH0.UIn_PmEoOYwRaH89pgQxdlNY3yEluyevhdJLSlCKhDE";
@@ -278,6 +279,10 @@ const mkDoc = () => {
 };
 
 const initPer = () => {
+  try {
+    const saved = localStorage.getItem("micsa_periodos");
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
   const p = {};
   [2025,2026].forEach(y => MESES.forEach((_,mi) => {
     p[`${y}-${String(mi+1).padStart(2,"0")}`] = { docs: mkDoc(), enviado: Math.random()>.65 };
@@ -431,7 +436,7 @@ const Dashboard = ({periodos, clientes}) => {
 };
 
 // ── DOCUMENTOS ────────────────────────────────────────────────────────────────
-const DocItem = ({d, def, per, uploading, sel, setSel, fileRef, aprobar, rechazar}) => {
+const DocItem = ({d, def, per, uploading, sel, setSel, fileRef, aprobar, rechazar, addToast}) => {
   const doc = per?.docs[d.id];
   const status = doc?.status || "pendiente";
   const sBadge=(s)=>{
@@ -458,7 +463,7 @@ const DocItem = ({d, def, per, uploading, sel, setSel, fileRef, aprobar, rechaza
         <div className="doc-acts">
           {sBadge(status)}
           {isXml&&<span style={{fontSize:10,fontWeight:600,color:"#B45309",background:"#FEF3C7",padding:"2px 7px",borderRadius:4}}>XML</span>}
-          {doc?.url&&<button className="btn btn-o btn-xs"><Ic d={I.link} s={11}/>Ver</button>}
+          {doc?.url&&<button className="btn btn-o btn-xs" onClick={()=>window.open(doc.url,'_blank')}><Ic d={I.link} s={11}/>Ver</button>}
           <button className="btn btn-p btn-xs" onClick={()=>{fileRef.current._did=d.id;fileRef.current.click();}}><Ic d={I.upload} s={11}/>Subir</button>
         </div>
       </div>
@@ -584,7 +589,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
               <span className="cat-cnt">{catOk}/{docs.length}</span>
             </div>
             {docs.map(d=>(
-              <DocItem key={d.id} d={d} def={def} per={per} uploading={uploading} sel={sel} setSel={setSel} fileRef={fileRef} aprobar={aprobar} rechazar={rechazar}/>
+              <DocItem key={d.id} d={d} def={def} per={per} uploading={uploading} sel={sel} setSel={setSel} fileRef={fileRef} aprobar={aprobar} rechazar={rechazar} addToast={addToast}/>
             ))}
           </div>
         );
@@ -643,7 +648,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
               {/* Docs del trabajador */}
               <div style={{padding:"8px 15px 10px"}}>
                 {[pdfDoc,xmlDoc].filter(Boolean).map(d=>(
-                  <DocItem key={d.id} d={d} def={defLaboral} per={per} uploading={uploading} sel={sel} setSel={setSel} fileRef={fileRef} aprobar={aprobar} rechazar={rechazar}/>
+                  <DocItem key={d.id} d={d} def={defLaboral} per={per} uploading={uploading} sel={sel} setSel={setSel} fileRef={fileRef} aprobar={aprobar} rechazar={rechazar} addToast={addToast}/>
                 ))}
               </div>
             </div>
@@ -759,7 +764,7 @@ const Nube = ({periodos}) => {
                   <td><span style={{fontSize:10,fontWeight:600,color:CAT[d.cat]?.color,background:CAT[d.cat]?.bg,padding:"2px 7px",borderRadius:4}}>{CAT[d.cat]?.label?.split(" ")[0]}</span></td>
                   <td className="mono t11 muted">{d.size}</td>
                   <td className="mono t11" style={{color:"var(--blue)",maxWidth:160}}><span className="trunc" style={{display:"block"}}>{d.url?.slice(0,32)}...</span></td>
-                  <td><div className="flex g4"><button className="btn btn-o btn-xs"><Ic d={I.eye} s={11}/>Ver</button><button className="btn btn-o btn-xs"><Ic d={I.download} s={11}/></button></div></td>
+                  <td><div className="flex g4"><button className="btn btn-o btn-xs" onClick={()=>window.open(d.url,'_blank')}><Ic d={I.eye} s={11}/>Ver</button><button className="btn btn-o btn-xs" onClick={()=>{const a=document.createElement('a');a.href=d.url;a.download=d.nombre||'documento';a.target='_blank';a.click();}}><Ic d={I.download} s={11}/></button></div></td>
                 </tr>
               );
             })}
@@ -1040,7 +1045,7 @@ const ICSOE = ({addToast}) => {
                     <td>
                       <div className="flex g8">
                         <button className="btn btn-o btn-xs" onClick={()=>setSel({k,c,r,y})}><Ic d={I.eye} s={11}/>Detalle</button>
-                        {r?.status==="presentada"&&<button className="btn btn-o btn-xs"><Ic d={I.download} s={11}/>Acuse</button>}
+                        {r?.status==="presentada"&&<button className="btn btn-o btn-xs" onClick={()=>{const doc=new jsPDF();doc.setFontSize(16);doc.text("ACUSE DE PRESENTACIÓN ICSOE",20,25);doc.setFontSize(11);doc.text(`Folio: ${r.folio}`,20,40);doc.text(`Período: ${c.label} ${y}`,20,50);doc.text(`Meses: ${c.meses}`,20,60);doc.text(`Fecha: ${new Date().toLocaleDateString("es-MX")}`,20,70);doc.text(`Contratos reportados: ${r.contratos?.length||0}`,20,80);doc.text("Estado: PRESENTADA",20,90);doc.save(`Acuse_ICSOE_${y}_${c.id}.pdf`);addToast("success","Acuse descargado");}}><Ic d={I.download} s={11}/>Acuse</button>}
                       </div>
                     </td>
                   </tr>
@@ -1111,7 +1116,7 @@ const ICSOE = ({addToast}) => {
             <div className="modal-foot">
               <button className="btn btn-o" onClick={()=>setSel(null)}>Cerrar</button>
               {sel.r?.status!=="presentada"&&<button className="btn btn-p" onClick={()=>simPresentar(sel.k)}><Ic d={I.send} s={13}/>Simular Presentación</button>}
-              {sel.r?.status==="presentada"&&<button className="btn btn-s"><Ic d={I.download} s={13}/>Descargar Acuse</button>}
+              {sel.r?.status==="presentada"&&<button className="btn btn-s" onClick={()=>{const doc=new jsPDF();doc.setFontSize(16);doc.text("ACUSE DE PRESENTACIÓN ICSOE",20,25);doc.setFontSize(11);doc.text(`Folio: ${sel.r.folio}`,20,40);doc.text(`Período: ${sel.c.label} ${sel.y}`,20,50);doc.text(`Meses: ${sel.c.meses}`,20,60);doc.text(`Fecha: ${new Date().toLocaleDateString("es-MX")}`,20,70);doc.text(`Contratos: ${sel.r.contratos?.length||0}`,20,80);doc.save(`Acuse_ICSOE_${sel.y}_${sel.c.id}.pdf`);addToast("success","Acuse descargado");setSel(null);}}><Ic d={I.download} s={13}/>Descargar Acuse</button>}
             </div>
           </div>
         </div>
@@ -1711,12 +1716,19 @@ const GeneradorContrato = ({ addToast }) => {
 
   const descargar = () => {
     const txt = document.getElementById('contrato-doc')?.innerText||'';
-    const b = new Blob([txt],{type:'text/plain;charset=utf-8'});
-    const u = URL.createObjectURL(b);
-    const a = document.createElement('a');
-    a.href=u; a.download=`Contrato_${(e.nombre||'X').replace(/\s+/g,'_')}_MICSA.txt`; a.click();
-    URL.revokeObjectURL(u);
-    addToast('success','Contrato descargado');
+    const doc = new jsPDF();
+    doc.setFontSize(14);
+    doc.text("CONTRATO INDIVIDUAL DE TRABAJO", 20, 20);
+    doc.setFontSize(10);
+    const lines = doc.splitTextToSize(txt, 170);
+    let y = 35;
+    lines.forEach(line => {
+      if (y > 275) { doc.addPage(); y = 20; }
+      doc.text(line, 20, y);
+      y += 5;
+    });
+    doc.save(`Contrato_${(e.nombre||'X').replace(/\s+/g,'_')}_MICSA.pdf`);
+    addToast('success','Contrato PDF descargado');
   };
 
   const I2 = ({lck,xml,...p}) => (
@@ -2026,7 +2038,7 @@ const CONTRATOS = ({ addToast }) => {
                     </div>
                     {vigBadge(c)}
                     <div className="flex g6">
-                      <button className="btn btn-o btn-xs" onClick={e=>{e.stopPropagation();addToast("info",`Descargando ${c.file}`)}}><Ic d={I.download} s={11}/>PDF</button>
+                      <button className="btn btn-o btn-xs" onClick={e=>{e.stopPropagation();const doc=new jsPDF();doc.setFontSize(16);doc.text("CONTRATO LABORAL",20,25);doc.setFontSize(11);doc.text(`Trabajador: ${c.trabajador}`,20,40);doc.text(`Puesto: ${c.puesto}`,20,50);doc.text(`Salario: $${c.salario.toLocaleString()}/mes`,20,60);doc.text(`Tipo: ${c.tipo}`,20,70);doc.text(`Inicio: ${c.inicio}`,20,80);doc.text(`Vencimiento: ${c.fin||"Indefinido"}`,20,90);if(c.clausulas){c.clausulas.forEach((cl,i)=>doc.text(`${i+1}. ${cl}`,20,105+i*10));}doc.save(c.file||"contrato.pdf");addToast("success",`${c.file} descargado`);}}><Ic d={I.download} s={11}/>PDF</button>
                     </div>
                   </div>
                 );
@@ -2087,7 +2099,7 @@ const CONTRATOS = ({ addToast }) => {
             </div>
             <div className="modal-foot">
               <button className="btn btn-o" onClick={()=>setSel(null)}>Cerrar</button>
-              <button className="btn btn-p" onClick={()=>{addToast("info",`Descargando ${sel.c.file}`);setSel(null);}}><Ic d={I.download} s={13}/>Descargar PDF</button>
+              <button className="btn btn-p" onClick={()=>{const doc=new jsPDF();doc.setFontSize(16);doc.text(sel.type==="servicio"?"CONTRATO DE SERVICIOS":"CONTRATO LABORAL",20,25);doc.setFontSize(11);if(sel.type==="servicio"){doc.text(`Cliente: ${sel.c.cliente}`,20,40);doc.text(`RFC: ${sel.c.rfc}`,20,50);doc.text(`Monto: $${sel.c.monto.toLocaleString()} ${sel.c.moneda}`,20,60);doc.text(`Inicio: ${sel.c.inicio}`,20,70);doc.text(`Vencimiento: ${sel.c.fin||"Indefinido"}`,20,80);doc.text(`Objeto: ${sel.c.objeto}`,20,95,{maxWidth:170});}else{doc.text(`Trabajador: ${sel.c.trabajador}`,20,40);doc.text(`Puesto: ${sel.c.puesto}`,20,50);doc.text(`Salario: $${sel.c.salario.toLocaleString()}/mes`,20,60);doc.text(`Tipo: ${sel.c.tipo}`,20,70);doc.text(`Inicio: ${sel.c.inicio}`,20,80);doc.text(`Vencimiento: ${sel.c.fin||"Indefinido"}`,20,90);if(sel.c.clausulas){sel.c.clausulas.forEach((cl,i)=>doc.text(`${i+1}. ${cl}`,20,105+i*10));}}doc.save(sel.c.file||"contrato.pdf");addToast("success",`${sel.c.file} descargado`);setSel(null);}}><Ic d={I.download} s={13}/>Descargar PDF</button>
             </div>
           </div>
         </div>
@@ -2104,6 +2116,10 @@ export default function App() {
   const [periodos,setPeriodos]=useState(initPer);
   const [clientes,setClientes]=useState(CLIENTES);
   const [toasts,setToasts]=useState([]);
+
+  useEffect(()=>{
+    try { localStorage.setItem("micsa_periodos",JSON.stringify(periodos)); } catch(e) {}
+  },[periodos]);
 
   const addToast=(type,msg)=>{
     const id=++_tId;
