@@ -1,4 +1,4 @@
-ï»¿import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { jsPDF } from "jspdf";
 
 const SUPABASE_URL = "https://gdauwwjuvzuopzqkxnpw.supabase.co";
