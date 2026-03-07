@@ -398,7 +398,7 @@ const Dashboard = ({periodos, clientes}) => {
             <div className="divider"/>
             <div className="cloud-info" style={{marginBottom:10}}>
               <Ic d={I.cloud} s={14}/>
-              <span>Cloud activo â {totalNube} archivos sincronizados en gdauwwjuvzuopzqkxnpw.supabase.co/storage/v1/object/public</span>
+              <span>Cloud activo â {totalNube} archivos sincronizados en Supabase Storage</span>
             </div>
             <div style={{display:"flex",gap:8}}>
               {[["Almacenamiento",`${(totalNube*1.4).toFixed(1)} MB`,"usado de 50 GB"],["PerÃ­odos Activos","24","meses con documentos"]].map(([l,v,s])=>(
@@ -573,7 +573,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
 
       <div className="cloud-info">
         <Ic d={I.cloud} s={16}/>
-        <span style={{flex:1}}>Cloud Storage activo â <strong>gdauwwjuvzuopzqkxnpw.supabase.co/storage/v1/object/public/repse/{mk}/</strong></span>
+        <span style={{flex:1}}>Cloud Storage activo â <strong>supabase.co · documentos/{mk}/</strong></span>
         <span className="mono t11">{nubeCount} archivos sincronizados</span>
       </div>
 
@@ -722,7 +722,7 @@ const Nube = ({periodos}) => {
 
       <div className="card mb16">
         <div className="card-hdr">
-          <div><div className="card-title">Estado del Almacenamiento</div><div className="card-sub">gdauwwjuvzuopzqkxnpw.supabase.co/storage/v1/object/public â Cloud Storage</div></div>
+          <div><div className="card-title">Estado del Almacenamiento</div><div className="card-sub">Supabase Storage — Cloud activo</div></div>
           <div className="cloud-pill"><div className="cloud-dot"/>Activo y Sincronizado</div>
         </div>
         <div className="card-body">
