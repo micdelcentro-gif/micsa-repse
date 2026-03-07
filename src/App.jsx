@@ -9,7 +9,7 @@ const supabaseUpload = async (bucket, path, file) => {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${SUPABASE_KEY}`,
-      "x-upsert": "true"
+      "x-upsert": "true",
       "Content-Type": file.type || "application/octet-stream",
     },
     body: file,
