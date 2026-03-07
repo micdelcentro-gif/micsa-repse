@@ -2111,7 +2111,52 @@ const CONTRATOS = ({ addToast }) => {
 // ââ APP âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let _tId=0;
 
+
+// ── AUTH ───────────────────────────────────────────────────────────────────
+const USERS=[{user:"admin",pass:"micsa2026",nombre:"Administrador"},{user:"micsa",pass:"repse2026",nombre:"Usuario MICSA"}];
+const Login=({onLogin})=>{
+  const [u,setU]=useState(""); const [p,setP]=useState(""); const [err,setErr]=useState(""); const [show,setShow]=useState(false);
+  const handle=(e)=>{e.preventDefault();const f=USERS.find(x=>x.user===u.trim()&&x.pass===p);f?onLogin(f):setErr("Usuario o contraseña incorrectos");};
+  return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0F1E35 0%,#1C3A5C 100%)",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Plus Jakarta Sans',sans-serif"}}>
+      <div style={{width:400,background:"#fff",borderRadius:20,padding:"44px 40px",boxShadow:"0 32px 80px rgba(0,0,0,.45)"}}>
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <div style={{fontSize:32,fontWeight:800,color:"#1C2E4A",letterSpacing:"-.5px"}}>MIC<span style={{color:"#5B8DB8"}}>SA</span></div>
+          <div style={{fontSize:10,color:"#9FB3C8",letterSpacing:"2.5px",textTransform:"uppercase",marginTop:3,fontFamily:"monospace"}}>COMPLIANCE ENGINE</div>
+          <div style={{marginTop:16,padding:"8px 16px",background:"#F0F4F8",borderRadius:20,display:"inline-block",fontSize:11,color:"#627D98",letterSpacing:"1.5px"}}>REPSE · IMSS · SAT · CLOUD</div>
+        </div>
+        <form onSubmit={handle}>
+          <div style={{marginBottom:16}}>
+            <label style={{display:"block",fontSize:11,fontWeight:700,color:"#334E68",marginBottom:6,textTransform:"uppercase",letterSpacing:".5px"}}>Usuario</label>
+            <input value={u} onChange={e=>setU(e.target.value)} placeholder="Ingresa tu usuario" autoFocus
+              style={{width:"100%",padding:"11px 14px",border:"1.5px solid #D9E2EC",borderRadius:9,fontSize:13,color:"#102A43",fontFamily:"inherit",outline:"none",transition:"border .15s"}}
+              onFocus={e=>e.target.style.borderColor="#0967D2"} onBlur={e=>e.target.style.borderColor="#D9E2EC"}/>
+          </div>
+          <div style={{marginBottom:22}}>
+            <label style={{display:"block",fontSize:11,fontWeight:700,color:"#334E68",marginBottom:6,textTransform:"uppercase",letterSpacing:".5px"}}>Contraseña</label>
+            <div style={{position:"relative"}}>
+              <input type={show?"text":"password"} value={p} onChange={e=>setP(e.target.value)} placeholder="••••••••"
+                style={{width:"100%",padding:"11px 44px 11px 14px",border:"1.5px solid #D9E2EC",borderRadius:9,fontSize:13,color:"#102A43",fontFamily:"inherit",outline:"none",transition:"border .15s"}}
+                onFocus={e=>e.target.style.borderColor="#0967D2"} onBlur={e=>e.target.style.borderColor="#D9E2EC"}/>
+              <span onClick={()=>setShow(s=>!s)} style={{position:"absolute",right:13,top:"50%",transform:"translateY(-50%)",cursor:"pointer",fontSize:11,color:"#9FB3C8",userSelect:"none",fontWeight:600}}>{show?"Ocultar":"Mostrar"}</span>
+            </div>
+          </div>
+          {err&&<div style={{marginBottom:16,padding:"10px 14px",background:"#FEE8E6",border:"1px solid #F9A8A0",borderRadius:8,fontSize:12,color:"#C0392B",fontWeight:600}}>{err}</div>}
+          <button type="submit" style={{width:"100%",padding:"12px",background:"#0967D2",color:"#fff",border:"none",borderRadius:9,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 14px rgba(9,103,210,.35)"}}>
+            Iniciar Sesión →
+          </button>
+        </form>
+        <div style={{marginTop:22,textAlign:"center",fontSize:11,color:"#B0C4D8"}}>Sistema de cumplimiento normativo MICSA S.A. de C.V.</div>
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
+  const [authed,setAuthed]=useState(()=>{try{return JSON.parse(sessionStorage.getItem("micsa_auth"));}catch(e){return null;}});
+  const doLogin=(u)=>{sessionStorage.setItem("micsa_auth",JSON.stringify(u));setAuthed(u);};
+  const doLogout=()=>{sessionStorage.removeItem("micsa_auth");setAuthed(null);};
+  if(!authed)return <Login onLogin={doLogin}/>;
   const [view,setView]=useState("dashboard");
   const [periodos,setPeriodos]=useState(initPer);
   const [clientes,setClientes]=useState(CLIENTES);
@@ -2196,6 +2241,8 @@ export default function App() {
             <div className="tb-right">
               <div className="cloud-pill"><div className="cloud-dot"/>Cloud Activo</div>
               <span className={`badge ${pBadge(v)}`}><Semaforo v={v}/>{MESES[now.getMonth()]} â {v}%</span>
+              <div style={{display:"flex",alignItems:"center",gap:8,padding:"5px 12px",background:"#F0F4F8",borderRadius:20,border:"1px solid #D9E2EC"}}><div style={{width:26,height:26,borderRadius:"50%",background:"#1C2E4A",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:11,fontWeight:700}}>{authed?.nombre?.charAt(0)||"U"}</div><span style={{fontSize:12,fontWeight:600,color:"#334E68"}}>{authed?.nombre||"Usuario"}</span></div>
+              <button onClick={doLogout} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",background:"transparent",border:"1.5px solid #D9E2EC",borderRadius:8,cursor:"pointer",fontSize:12,fontWeight:600,color:"#627D98",fontFamily:"inherit"}}>↪ Salir</button>
             </div>
           </div>
 
