@@ -9,7 +9,7 @@ const supabaseUpload = async (bucket, path, file) => {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${SUPABASE_KEY}`,
-      "x-upsert": "true",
+      "x-upsert": "true"
       "Content-Type": file.type || "application/octet-stream",
     },
     body: file,
@@ -271,7 +271,7 @@ const mkDoc = () => {
       nombre: loaded ? `${def.id}_2026.${ext}` : null,
       fecha: loaded ? `2026-02-${String(Math.floor(Math.random()*20)+1).padStart(2,"0")}` : null,
       size: loaded ? `${(Math.random()*2.5+.3).toFixed(1)} MB` : null,
-      url: loaded ? `https://storage.micsa.com/repse/${def.id}_${Math.floor(Math.random()*9000+1000)}.pdf` : null,
+      url: loaded ? `https://gdauwwjuvzuopzqkxnpw.supabase.co/storage/v1/object/public/repse/${def.id}_${Math.floor(Math.random()*9000+1000)}.pdf` : null,
       by: loaded ? "admin@micsa.com" : null,
     };
   });
@@ -398,7 +398,7 @@ const Dashboard = ({periodos, clientes}) => {
             <div className="divider"/>
             <div className="cloud-info" style={{marginBottom:10}}>
               <Ic d={I.cloud} s={14}/>
-              <span>Cloud activo â {totalNube} archivos sincronizados en storage.micsa.com</span>
+              <span>Cloud activo â {totalNube} archivos sincronizados en gdauwwjuvzuopzqkxnpw.supabase.co/storage/v1/object/public</span>
             </div>
             <div style={{display:"flex",gap:8}}>
               {[["Almacenamiento",`${(totalNube*1.4).toFixed(1)} MB`,"usado de 50 GB"],["PerÃ­odos Activos","24","meses con documentos"]].map(([l,v,s])=>(
@@ -573,7 +573,7 @@ const Documentos = ({periodos, setPeriodos, addToast}) => {
 
       <div className="cloud-info">
         <Ic d={I.cloud} s={16}/>
-        <span style={{flex:1}}>Cloud Storage activo â <strong>storage.micsa.com/repse/{mk}/</strong></span>
+        <span style={{flex:1}}>Cloud Storage activo â <strong>gdauwwjuvzuopzqkxnpw.supabase.co/storage/v1/object/public/repse/{mk}/</strong></span>
         <span className="mono t11">{nubeCount} archivos sincronizados</span>
       </div>
 
@@ -722,7 +722,7 @@ const Nube = ({periodos}) => {
 
       <div className="card mb16">
         <div className="card-hdr">
-          <div><div className="card-title">Estado del Almacenamiento</div><div className="card-sub">storage.micsa.com â Cloud Storage</div></div>
+          <div><div className="card-title">Estado del Almacenamiento</div><div className="card-sub">gdauwwjuvzuopzqkxnpw.supabase.co/storage/v1/object/public â Cloud Storage</div></div>
           <div className="cloud-pill"><div className="cloud-dot"/>Activo y Sincronizado</div>
         </div>
         <div className="card-body">
@@ -2145,7 +2145,7 @@ export default function App() {
   ];
 
   const TITLES={dashboard:"Panel General",documentos:"GestiÃ³n Documental",nube:"Nube & Archivos",clientes:"Clientes & EnvÃ­os",contratos:"Contratos",sisub:"SISUB â SubcontrataciÃ³n",fonacot:"FONACOT â CrÃ©ditos de NÃ³mina",icsoe:"ICSOE â Informativa Cuatrimestral",alertas:"Alertas & Vencimientos"};
-  const SUBS={dashboard:`Resumen ejecutivo de cumplimiento REPSE â ${MESES[now.getMonth()]} ${now.getFullYear()}`,documentos:"Carga, valida y aprueba documentos. Se guardan automÃ¡ticamente en la nube.",nube:"Archivos almacenados en cloud â storage.micsa.com",clientes:"Gestiona clientes y envÃ­a expedientes completos por correo automÃ¡tico",contratos:"Contratos de servicio con clientes y contratos laborales de trabajadores",sisub:"Registro de subcontratistas y reporte mensual de trabajadores por cliente",fonacot:"Control de crÃ©ditos activos y retenciones mensuales en nÃ³mina",icsoe:"Reporte cuatrimestral de contratos al IMSS via portal ICSOE Â· Art. 15-A LSS",alertas:"Documentos faltantes y vencimientos prÃ³ximos"};
+  const SUBS={dashboard:`Resumen ejecutivo de cumplimiento REPSE â ${MESES[now.getMonth()]} ${now.getFullYear()}`,documentos:"Carga, valida y aprueba documentos. Se guardan automÃ¡ticamente en la nube.",nube:"Archivos almacenados en cloud â gdauwwjuvzuopzqkxnpw.supabase.co/storage/v1/object/public",clientes:"Gestiona clientes y envÃ­a expedientes completos por correo automÃ¡tico",contratos:"Contratos de servicio con clientes y contratos laborales de trabajadores",sisub:"Registro de subcontratistas y reporte mensual de trabajadores por cliente",fonacot:"Control de crÃ©ditos activos y retenciones mensuales en nÃ³mina",icsoe:"Reporte cuatrimestral de contratos al IMSS via portal ICSOE Â· Art. 15-A LSS",alertas:"Documentos faltantes y vencimientos prÃ³ximos"};
 
   const grps=[...new Set(NAV.map(n=>n.grp))];
 
